@@ -1,7 +1,9 @@
-/* ===================================================================== */
-@import "tailwindcss/components";
-
 
 /* ===================================================================== */
 
 @import "tailwindcss/utilities";
+
+/* ===================================================================== */
+@import "tailwindcss/components";
+@import "./components/icons.css";
+@import "./components/buttons.css";

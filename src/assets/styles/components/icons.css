@@ -1,0 +1,25 @@
+
+/* icon 1 */
+
+.icon-1 {
+    @apply py-1 ml-5 relative;
+    @apply transition-all duration-150 ease-in-out;
+    @apply cursor-pointer;
+}
+
+.icon-1:hover {
+    @apply text-color-secondary-1-1;
+    @apply transform scale-105;
+
+}
+
+.icon-1:active {
+    @apply transform scale-95;
+
+}
+
+.icon-1-img {
+    @apply h-6 w-6;
+}
+
+/* icon 1 end*/

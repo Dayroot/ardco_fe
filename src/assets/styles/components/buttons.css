@@ -1,0 +1,102 @@
+
+/* hamburger button */
+
+.hamburger{
+    @apply flex md:hidden items-center justify-center;
+    @apply w-6 h-8 ml-5 cursor-pointer;
+    @apply transition-all duration-150 ease-in-out;
+}
+
+.hamburger:hover {
+    @apply transform scale-105;
+}
+
+.hamburger:hover .hamburger-line{
+    @apply  bg-color-secondary-1-1;
+}
+
+.hamburger-line{
+    @apply block w-6 h-0.7 my-1;
+    @apply  bg-color-secondary-1-0;
+    animation-duration: 500ms;
+    animation-fill-mode: forwards;
+}
+
+
+.hamburger-open .hamburger-line-top {
+    animation-name: top-line-animation;
+}
+
+.hamburger-open .hamburger-line-middle {
+    animation-name: middle-line-animation;
+}
+
+.hamburger-open .hamburger-line-bottom {
+    animation-name: bottom-line-animation;
+}
+
+
+.hamburger-line-top {
+    animation-name: top-line-animation-close;
+}
+
+.hamburger-line-middle {
+    animation-name: middle-line-animation-close;
+}
+
+.hamburger-line-bottom {
+    animation-name: bottom-line-animation-close;
+}
+
+@keyframes top-line-animation {
+    50%, 100%{
+        @apply my-0 bg-color-primary-2;
+        transform: translateY(2px) rotate(-45deg);
+    }
+}
+
+@keyframes bottom-line-animation {
+    50%, 100%{
+        @apply my-0 bg-color-primary-2;
+        transform: translateY(-2px) rotate(45deg);
+    }
+}
+
+@keyframes middle-line-animation {
+    20%, 100%{
+        @apply opacity-0 w-0 my-0;       
+    }
+}
+
+@keyframes top-line-animation-close {
+    0%{
+        @apply my-0 bg-color-primary-2;
+        transform: translateY(2px) rotate(-45deg);
+    }
+    50%, 100%{
+        @apply my-1 bg-color-secondary-1-0;
+        transform: translateY(0px) rotate(0deg);
+    }
+}
+
+@keyframes bottom-line-animation-close {
+    0%{
+        @apply my-0 bg-color-primary-2;
+        transform: translateY(-2px) rotate(45deg);
+    }
+    50%, 100%{
+        @apply my-1 bg-color-secondary-1-0;
+        transform: translateY(0px) rotate(0deg);
+    }
+}
+
+@keyframes middle-line-animation-close {
+    0%{
+        @apply opacity-0 w-0 my-0;       
+    }
+    20%, 100%{
+        @apply opacity-100 w-6 my-1;       
+    }
+}
+
+/* hamburger button end*/

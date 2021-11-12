@@ -8,14 +8,12 @@
 @layer base {
     
     @font-face {
-        font-family: 'Josefin Sans', sans-serif;
-        font-weight: 700;
-        src: url(/fonts/JosefinSans-Bold.ttf) format("ttf");
+        font-family: 'Jost', sans-serif;
+        src: url(/fonts/Jost-VariableFont_wght.ttf) format("ttf");
     }
     @font-face {
-        font-family: 'Tenor Sans', sans-serif;
-        font-weight: 400;
-        src: url(/fonts/TenorSans-Regular.ttf) format("ttf");
+        font-family: 'Marcellus', serif;
+        src: url(/fonts/Marcellus-Regular.ttf) format("ttf");
     }
 }
 
