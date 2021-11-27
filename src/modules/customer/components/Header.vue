@@ -100,6 +100,7 @@ export default {
     
 }
 
+
 .logo{
     @apply flex  flex-shrink-0 items-center justify-start;
     @apply pr-5;
