@@ -19,7 +19,13 @@ const routes = [
         		meta: {title: 'Ardco'},
 				component:  () => import(/* webpackChunkName: "customerHomepage" */'../modules/customer/pages/CustomerHomePage')
 			},
-			
+
+			{
+				path: '/Sombreros',
+				name: 'hatPage',
+        		meta: {title: 'Sombreros'},
+				component:  () => import(/* webpackChunkName: "hatPage" */'../modules/customer/pages/HatPage')
+			},
 		]
 	},
   	{
