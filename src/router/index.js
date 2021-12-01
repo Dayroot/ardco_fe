@@ -17,32 +17,14 @@ const routes = [
 				path: '',
 				name: 'home',
         		meta: {title: 'Ardco'},
-				component:  () => import(/* webpackChunkName: "customerHomepage" */'../modules/customer/pages/CustomerHomePage')
+				component:  () => import(/* webpackChunkName: "homepage" */'../modules/customer/pages/HomePage')
 			},
-
 			{
 				path: '/Sombreros',
-				name: 'hatPage',
+				name: 'hatsPage',
         		meta: {title: 'Sombreros'},
-				component:  () => import(/* webpackChunkName: "hatPage" */'../modules/customer/pages/HatPage')
+				component:  () => import(/* webpackChunkName: "hatsPage" */'../modules/customer/pages/HatsPage')
 			},
-		]
-	},
-  	{
-		path: '/vender',
-		name: 'seller',
-		component: () => import(/* webpackChunkName: "sellerLayout" */'../modules/seller/layouts/SellerLayout'),
-		children: [
-			{
-				path: '/articulos-publicados',
-				name: 'publications',
-				meta: {title: 'Articulos publicados'},
-				component:  () => import(/* webpackChunkName: "publicationsPage" */'../modules/seller/pages/PublicationsPage')
-			},
-			{
-				path: '',
-				redirect: { name: 'publications' }
-			}
 		]
 	},
   	{
