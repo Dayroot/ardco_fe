@@ -101,9 +101,24 @@
 
 /* hamburger button end*/
 
+/* button 1 */
 .button-1 {
-    @apply block w-full py-1 rounded-b; 
+    @apply flex items-center justify-center w-full py-1 rounded-b uppercase; 
     @apply bg-color-primary-2 border border-color-primary-2;
     @apply hover:bg-transparent hover:text-color-primary-2 transition;
-    @apply text-white text-center font-medium;
+    @apply text-white font-medium;
 }
+
+.button-1--v2 {
+    @apply text-sm w-auto px-4 py-2 rounded;
+}
+/* button 1 end */
+
+/* button 2 */
+.button-2 {
+    @apply flex items-center justify-center w-auto py-2 px-4 rounded; 
+    @apply  border-gray-300 border;
+    @apply  hover:text-color-primary-2 transition;
+    @apply text-gray-600 font-medium rounded uppercase text-sm; 
+}
+/* button 2 end */

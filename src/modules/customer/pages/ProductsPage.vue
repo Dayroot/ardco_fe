@@ -14,7 +14,12 @@
 import { defineAsyncComponent } from 'vue';
 
 export default{
-    props : ['category'],
+    props : {
+        categoryId:{
+            type: String,
+            required: true,
+        }
+    },
     components:{
         ProductSection: defineAsyncComponent(() => import( /* webpackChunkName: "productSection" */ '../components/products/ProductSection')),
 
@@ -130,17 +135,4 @@ export default{
     },
 }
 </script>
-
-<style scoped>
-        /* .container{
-            display: grid;
-            grid-template-rows: 1fr 100px;
-            grid-template-columns: 800px 1fr;
-            background: linear-gradient;
-        }
-        .sideBar{
-            background: linear-gradient;
-            display: flex;
-        } */
-</style>
 

@@ -76,7 +76,6 @@
                         />
                     </div>
                 </div>
-        
             </div>
             <!-- color filter end -->
         </div>

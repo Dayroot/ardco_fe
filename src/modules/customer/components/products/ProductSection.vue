@@ -1,5 +1,6 @@
 <template>
     <div class="flex">
+        <!-- filter bar -->
         <div class="filter">
             <product-filter
                 :products="products"
@@ -9,7 +10,9 @@
             >
             </product-filter>
         </div>
+        <!-- filter bar end-->
         <div>
+            <!-- sort bar -->
             <div class="sort-bar">
                 <button 
                     class="sort-button sort-button--modal"
@@ -20,11 +23,13 @@
                 </button>
                 <select class="sort-button" v-model="sortBy">
                     <option class="hidden" value="default">Ordenar por</option>
-                    <option value="sales">Más vendidos</option>
-                    <option value="low">Menor precio</option>
-                    <option value="high">Mayor precio</option>
+                    <option class=" text-xs" value="sales">Más vendidos</option>
+                    <option class="text-xs" value="low">Menor precio</option>
+                    <option class="text-xs" value="high">Mayor precio</option>
                 </select>
             </div>
+            <!-- sort bar end -->
+            <!-- products -->
             <div class="products">
                 <div class="message" v-if="noProducts">
                     <span>No hay productos disponibles para tu busqueda</span>
@@ -36,6 +41,7 @@
                     <card :product="product"/>
                 </div>
             </div>
+            <!-- products end-->
         </div>
     
     </div>
@@ -129,13 +135,14 @@ export default{
 </script>
 
 <style lang="css" scoped>
+
     .sort-bar {
         @apply mb-4 flex justify-start;
     }
 
     .sort-button {
         @apply focus:outline-none;
-        @apply w-44 text-sm text-gray-600 px-4 py-3;
+        @apply w-32 text-sm text-gray-600 px-4 py-3;
         @apply border-gray-300 shadow-sm rounded;
         @apply focus:ring-color-primary-0 focus:border-color-primary-0 focus:ring-2;
         @apply flex justify-start items-center bg-color-secondary-1-1 mr-4;
@@ -152,10 +159,9 @@ export default{
         @apply flex flex-col items-center;
         @apply mxs:grid 2xl:grid-cols-4 sm:grid-cols-3 mxs:grid-cols-2;
         @apply 2xl:gap-14 xl:gap-20 lg:gap-14 xs:gap-10 mxs:gap-8 gap-4;
-        @apply bg-blue-300;
     }
     .message {
-        @apply text-gray-600;
+        @apply text-gray-600 absolute;
     }
 
 

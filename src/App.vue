@@ -7,7 +7,7 @@
     @apply font-primary;
   }
   body {
-    @apply overflow-x-hidden;
+    @apply overflow-x-hidden bg-color-secondary-1-2;
   }
 
 </style>

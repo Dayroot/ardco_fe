@@ -10,37 +10,45 @@ const routes = [
 
 	{
 		path: '/',
-		name: 'customer',
+		name: 'customerLayout',
 		component: () => import(/* webpackChunkName: "customerLayout" */'../modules/customer/layouts/CustomerLayout'),
-		children: [
+		children: [	
 			{
-				path: '',
-				name: 'home',
-        		meta: {title: 'Ardco'},
-				component:  () => import(/* webpackChunkName: "homepage" */'../modules/customer/pages/HomePage')
-			},
-			{
-				path: '/categorias',
+				path: 'categorias',
 				name: 'categories',
 				component: () => import(/* webpackChunkName: "categoriesLayout" */'../modules/customer/layouts/CategoriesLayout'),
 				children: [
 					{
-						path: '',
-						name: 'hatsPage',
+						path: 'productos',
+						name: 'productsLayout',
 						meta: {title: 'Productos'},
-						component:  () => import(/* webpackChunkName: "productsPage" */'../modules/customer/pages/ProductsPage')
-					},
-					{
-						path: '/:productId',
-						name: 'productDetailPage',
-						meta: {title: 'Detalles de producto'},
-						component:  () => import(/* webpackChunkName: "ProductDetailPage" */'../modules/customer/pages/ProductDetailPage'),
-						props: ( route ) => {
-							const { productId } = route.params;
-							return productId
-						}
-					},
+						component:  () => import(/* webpackChunkName: "productsLayout" */'../modules/customer/layouts/ProductsLayout'),
+						children: [
+							{
+								path: ':productId',
+								name: 'productDetailPage',
+								meta: {title: 'Detalles de producto'},
+								component:  () => import(/* webpackChunkName: "ProductDetailPage" */'../modules/customer/pages/ProductDetailPage'),
+								props: true,
+							},
+							{
+								path: '',
+								name: 'products',
+								meta: {title: 'Productos'},
+								component:  () => import(/* webpackChunkName: "productsPage" */'../modules/customer/pages/ProductsPage'),
+							}
+						]
+
+					}
+					
+				
 				]
+			},
+			{
+				path: '',
+				name: 'home',
+				meta: {title: 'Ardco'},
+				component:  () => import(/* webpackChunkName: "homepage" */'../modules/customer/pages/HomePage')
 			},
 		]
 	},

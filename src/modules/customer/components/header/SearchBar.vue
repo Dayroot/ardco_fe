@@ -39,7 +39,7 @@ export default {
 }
 .search-bar__input {
     @apply  w-full h-10;
-    @apply p-2 rounded-sm md:pl-0 pl-7;
+    @apply p-2 rounded-sm md:pl-2 pl-7;
     @apply ring-1 ring-color-primary-0 md:ring-color-primary-2;
 }
 

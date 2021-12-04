@@ -4,37 +4,42 @@
 
         <!-- card image -->
         <figure class="group card__img"> 
-
             <img :src="product.imgUrls[0]" class="w-full">
-
+            <!-- image back drop -->
             <div class="back-drop">
-                <router-link to="" class="back-drop__icon">
+                <router-link 
+                    :to="{name: 'productDetailPage', params: {productId: product._id}}" 
+                    class="back-drop__icon"
+                >
                     <i class="fas fa-search"></i>
                 </router-link>
-                <router-link to="" class="back-drop__icon">
-                    <i class="far fa-heart"></i> 
+                <router-link 
+                    to="" 
+                    class="back-drop__icon"
+                    @click="setLike" 
+                >
+                    <i :class="{'far fa-heart': !like, 'fas fa-heart': like}"></i>
                 </router-link>
             </div>
-
+            <!-- image back drop end -->
         </figure>
         <!-- card image end -->
 
         <!-- card content -->
         <div class="card__content">
 
-            <router-link :to="{name: productDetailPage}">
+            <router-link :to="{name: 'productDetailPage', params: {productId: product._id}}">
                 <h4 class="card__title">{{product.name}}</h4>
             </router-link>
 
             <div class="card__price">
                 <p>${{product.price}}</p>
-
                 <div 
                     class="icon-heart"
                     @click="setLike"
                 >
-                    <i :class="{'far fa-heart': true, 'hidden': !like}"></i>
-                    <i :class="{'fas fa-heart': true, 'hidden': like}"></i>
+                    <i :class="{'far fa-heart': !like, 'fas fa-heart': like}"></i>
+
                 </div>
                 
                 
@@ -56,8 +61,12 @@
 
         <!-- card button -->
         <button class="button-1 text-sm">
-            <label class="mr-2">AGREGAR</label>
-            <i class="fas fa-cart-plus"></i>
+            <span class="mr-2">AGREGAR</span>
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+            </div>
         </button>
         <!-- card button end -->
     </div>
