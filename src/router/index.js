@@ -31,10 +31,14 @@ const routes = [
 						component:  () => import(/* webpackChunkName: "productsPage" */'../modules/customer/pages/ProductsPage')
 					},
 					{
-						path: '/:id',
+						path: '/:productId',
 						name: 'productDetailPage',
 						meta: {title: 'Detalles de producto'},
-						component:  () => import(/* webpackChunkName: "ProductDetailPage" */'../modules/customer/pages/ProductDetailPage')
+						component:  () => import(/* webpackChunkName: "ProductDetailPage" */'../modules/customer/pages/ProductDetailPage'),
+						props: ( route ) => {
+							const { productId } = route.params;
+							return productId
+						}
 					},
 				]
 			},

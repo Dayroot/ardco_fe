@@ -22,7 +22,7 @@
         <!-- card content -->
         <div class="card__content">
 
-            <router-link to="">
+            <router-link :to="{name: productDetailPage}">
                 <h4 class="card__title">{{product.name}}</h4>
             </router-link>
 
