@@ -2,8 +2,11 @@
 /* ===================================================================== */
 
 @import "tailwindcss/utilities";
-
+@import "./utilities/margins.css";
+@import "./utilities/checkbox.css";
 /* ===================================================================== */
 @import "tailwindcss/components";
 @import "./components/icons.css";
 @import "./components/buttons.css";
+
+

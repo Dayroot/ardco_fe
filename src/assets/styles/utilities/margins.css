@@ -1,0 +1,3 @@
+.marginsX-1{
+    @apply px-2% 2xl:px-10% lg:px-4% md:px-3%;
+}

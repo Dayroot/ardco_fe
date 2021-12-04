@@ -1,18 +1,27 @@
 <template>
 
     <!-- header -->
-    <header class="header">
+    <header class="header marginsX-1">
 
-        <div class="logo">
-            <img class="logo-img" src="@/assets/logo-ardco2.svg" alt="">
-        </div>
+        <router-link :to="{name: 'home'}" class="logo">
+            <img class="logo__img" src="@/assets/logo-ardco2.svg" alt="">
+        </router-link>
 
-        <search-bar></search-bar>
+        <search-bar
+            :openSearchBar="activateSearchBar"
+            @closeSearchBar="setActivateSearchBar"
+        ></search-bar>
 
-        <div class="header-icons-container">
+        <div class="header__icons">
+            <!--search icon -->
+            <div class="icon-1 block md:hidden" @click="setActivateSearchBar">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
     
             <!-- bell icon -->
-            <div class="icon-1 hidden sm:block">
+            <div class="icon-1 block">
                 <span class="counter">3</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon-1-img" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -78,13 +87,17 @@ export default {
     },
     data() {
         return {
-           activateMobileMenu: false,  
+           activateMobileMenu: false,
+           activateSearchBar:false,
         }
     },
     methods:{
         setActivateMobileMenu: function(){
             this.activateMobileMenu = !this.activateMobileMenu;
         },
+        setActivateSearchBar: function(){
+            this.activateSearchBar = !this.activateSearchBar;
+        }
     },
 
 }
@@ -94,12 +107,11 @@ export default {
 
 .header {
     @apply flex flex-wrap items-center justify-between;
-    @apply py-3 px-2% lg:px-10% md:px-8% ;
-    @apply relative z-20;
-    @apply bg-color-secondary-2-0;
+    @apply py-3;
+    @apply relative z-40;
+    @apply bg-color-secondary-2-1;
     
 }
-
 
 .logo{
     @apply flex  flex-shrink-0 items-center justify-start;
@@ -107,11 +119,11 @@ export default {
     @apply cursor-pointer;
 }
 
-.logo-img {
+.logo__img {
     @apply w-17.5 xs:w-24;
 }
 
-.header-icons-container {
+.header__icons {
     @apply flex justify-end;
     @apply text-color-secondary-1-0 text-sm font-bold;
 }

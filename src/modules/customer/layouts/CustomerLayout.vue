@@ -10,7 +10,7 @@ import {defineAsyncComponent} from 'vue'
 
 export default {
     components:{
-        Header: defineAsyncComponent( () => import( /* webpackChunkName: "header" */ '../components/Header' )),
+        Header: defineAsyncComponent( () => import( /* webpackChunkName: "header" */ '../components/header/Header' )),
         Footer: defineAsyncComponent( () => import( /* webpackChunkName: "footer" */ '../components/Footer' ))
     }
 }

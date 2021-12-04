@@ -100,3 +100,10 @@
 }
 
 /* hamburger button end*/
+
+.button-1 {
+    @apply block w-full py-1 rounded-b; 
+    @apply bg-color-primary-2 border border-color-primary-2;
+    @apply hover:bg-transparent hover:text-color-primary-2 transition;
+    @apply text-white text-center font-medium;
+}

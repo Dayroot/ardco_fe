@@ -20,10 +20,23 @@ const routes = [
 				component:  () => import(/* webpackChunkName: "homepage" */'../modules/customer/pages/HomePage')
 			},
 			{
-				path: '/Sombreros',
-				name: 'hatsPage',
-        		meta: {title: 'Sombreros'},
-				component:  () => import(/* webpackChunkName: "hatsPage" */'../modules/customer/pages/HatsPage')
+				path: '/categorias',
+				name: 'categories',
+				component: () => import(/* webpackChunkName: "categoriesLayout" */'../modules/customer/layouts/CategoriesLayout'),
+				children: [
+					{
+						path: '',
+						name: 'hatsPage',
+						meta: {title: 'Productos'},
+						component:  () => import(/* webpackChunkName: "productsPage" */'../modules/customer/pages/ProductsPage')
+					},
+					{
+						path: '/:id',
+						name: 'productDetailPage',
+						meta: {title: 'Detalles de producto'},
+						component:  () => import(/* webpackChunkName: "ProductDetailPage" */'../modules/customer/pages/ProductDetailPage')
+					},
+				]
 			},
 		]
 	},
