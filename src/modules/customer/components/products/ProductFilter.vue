@@ -52,14 +52,15 @@
             <div class="mb-5">
                 <h3 class="filter__title">Precio</h3>
                 <div class="filter__option">
-                    <input type="text"
+                    <Slider></Slider>
+                    <!-- <input type="text"
                         class="input-text"
                         placeholder="min">
                     <span class="mx-3 text-gray-500">-</span>
                     <input type="text"
                         class="input-text"
                         placeholder="max"
-                    />
+                    /> -->
                 </div>
             </div>
             <!-- price filter end -->

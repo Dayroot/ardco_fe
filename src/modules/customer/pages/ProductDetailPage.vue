@@ -1,9 +1,9 @@
 <template>
     <div class="marginsX-2 publication-container">
         <!-- product view -->
-        <div class="product">
+        <section class="product">
             <!-- product image -->
-            <section class=" bg-green-500 images">
+            <article class=" bg-green-500 images">
                 <div>
                     <img src="https://exitocol.vtexassets.com/arquivos/ids/6837232-1600-auto?v=637503836659070000&width=1600&height=auto&aspect=true" class="images__main">
                 </div>
@@ -21,10 +21,10 @@
                         <img src="https://exitocol.vtexassets.com/arquivos/ids/6837232-1600-auto?v=637503836659070000&width=1600&height=auto&aspect=true" class="images__single">
                     </div>
                 </div>
-            </section>
+            </article>
             <!-- product image end -->
             <!-- product content -->
-            <div>
+            <article>
                 <h2 class="product__name">{{publication.product.name}}</h2>
                 <router-link to="" class="review">
                     <div class="review__stars">     
@@ -115,10 +115,34 @@
                     </a>
                 </div>
                 <!-- product share icons end -->
-            </div>
+            </article>
             <!-- product content end -->
-        </div>
-        <!-- product view end -->   
+        </section>
+        <!-- product view end --> 
+        <!-- questions and answers -->
+        <section class="questions-section-container">
+            <div class="questions-section__title">
+                <h1>Preguntas y Respuestas</h1>
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <div class="question-entry">
+                <label class="question-entry__label">Pregúntale al vendedor</label>
+                <input 
+                    type="text" 
+                    name="question input" 
+                    class="question-entry__input"
+                    placeholder="Escribe tu pregunta..."
+                />
+            </div>
+            <div class="questions">
+               <label class="question-entry__label">Últimas realizadas</label>
+               <div class="questions__question-wrapper">
+                   <p class="questions__question"></p>
+                   <p class="questions__answer"></p>
+               </div>
+            </div>
+        </section>
+        <!-- questions and answers end-->
     </div>
 </template>
 
@@ -157,6 +181,78 @@ export default {
                 publication_date: "2021-12-4",
                 description: "Incredible graphics performanceMacBook Air can take on more graphics-intensive projects than ever. For the first time, content creators can  edit and seamlessly play back multiple streams of full‑quality 4K video without dropping a frame."
             },
+            questions:[
+                {
+                    date: "2021-12-4",
+                    userId: 1,
+                    text: "¿Este producto es aprueba de agua?",
+                    answer: null,
+                    status: "sin responder"
+                },
+                {
+                    date: "2021-12-4",
+                    userId: 1,
+                    text: "¿Este producto es aprueba de agua?",
+                    answer: null,
+                    status: "sin responder"
+                },
+                {
+                    date: "2021-12-4",
+                    userId: 1,
+                    text: "¿Este producto es aprueba de agua?",
+                    answer: null,
+                    status: "sin responder"
+                },
+                {
+                    date: "2021-12-4",
+                    userId: 1,
+                    text: "¿Este producto es aprueba de agua?",
+                    answer: null,
+                    status: "sin responder"
+                },
+                {
+                    date: "2021-12-4",
+                    userId: 1,
+                    text: "¿Este producto es aprueba de agua?",
+                    answer: null,
+                    status: "sin responder"
+                },
+                {
+                    date: "2021-12-4",
+                    userId: 1,
+                    text: "¿Este producto es aprueba de agua?",
+                    answer: null,
+                    status: "sin responder"
+                },
+                {
+                    date: "2021-12-4",
+                    userId: 1,
+                    text: "¿Este producto es aprueba de agua?",
+                    answer: null,
+                    status: "sin responder"
+                },
+                {
+                    date: "2021-12-4",
+                    userId: 1,
+                    text: "¿Este producto es aprueba de agua?",
+                    answer: null,
+                    status: "sin responder"
+                },
+                {
+                    date: "2021-12-4",
+                    userId: 1,
+                    text: "¿Este producto es aprueba de agua?",
+                    answer: null,
+                    status: "sin responder"
+                },
+                {
+                    date: "2021-12-4",
+                    userId: 1,
+                    text: "¿Este producto es aprueba de agua?",
+                    answer: null,
+                    status: "sin responder"
+                }
+            ],
             like: false,
             quantity: 0,
         }
@@ -181,7 +277,7 @@ export default {
 
     .publication-container {
         @apply shadow bg-color-secondary-1-1;
-        @apply mt-6 p-5 flex justify-center;
+        @apply mt-6 p-5 flex flex-col justify-center;
     }
 
     .product {
@@ -274,4 +370,31 @@ export default {
     .share-icon {
         @apply text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center;
     }
+    .questions-section-container {
+        @apply mt-8 bg-blue-300 text-color-secondary-2-0;
+    }
+    .questions-section__title {
+        @apply font-semibold text-2xl;
+        @apply flex gap-4 items-center py-2;
+        @apply bg-green-300;
+    }
+
+    .question-entry {
+        @apply flex flex-col py-3 ;
+        @apply bg-red-300;
+        
+    }
+    .question-entry__input {
+        @apply block max-w-lg  ring-1 ring-gray-400  rounded;
+        @apply p-3 focus:ring-2  focus:ring-color-primary-2 focus:outline-none;
+    }
+
+    .question-entry__label{
+        @apply text-lg font-medium mb-2;
+    }
+    .questions {
+        @apply flex flex-col py-3;
+    }
+
+
 </style>
