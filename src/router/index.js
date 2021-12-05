@@ -42,20 +42,32 @@ const routes = [
 					},
 				]
 			},
+			{
+				path: 'iniciar-sesion',
+				name: 'login',
+				meta: {title: 'Iniciar sesión'},
+				component:  () => import(/* webpackChunkName: "loginPage" */'../modules/shared/pages/LoginPage')
+			},
+			{
+				path: 'registrarse',
+				name: 'signUp',
+				meta: {title: 'Registrarse'},
+				component:  () => import(/* webpackChunkName: "signUpPage" */'../modules/shared/pages/SignUpPage')
+			},
 		]
 	},
-  	{
-		path: '/iniciar-sesion',
-		name: 'login',
-		meta: {title: 'Iniciar sesión'},
-		component:  () => import(/* webpackChunkName: "loginPage" */'../modules/shared/pages/LoginPage')
-	},
-	{
-		path: '/registrarse',
-		name: 'signUp',
-		meta: {title: 'Registrarse'},
-		component:  () => import(/* webpackChunkName: "signUpPage" */'../modules/shared/pages/SignUpPage')
-	},
+  	// {
+	// 	path: '/iniciar-sesion',
+	// 	name: 'login',
+	// 	meta: {title: 'Iniciar sesión'},
+	// 	component:  () => import(/* webpackChunkName: "loginPage" */'../modules/shared/pages/LoginPage')
+	// },
+	// {
+	// 	path: '/registrarse',
+	// 	name: 'signUp',
+	// 	meta: {title: 'Registrarse'},
+	// 	component:  () => import(/* webpackChunkName: "signUpPage" */'../modules/shared/pages/SignUpPage')
+	// },
   
 ]
 
