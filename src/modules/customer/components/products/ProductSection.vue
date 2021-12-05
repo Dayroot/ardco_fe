@@ -74,16 +74,21 @@ export default{
     methods: {
 
         filterProducts: function(filters){
-
+            
                 if(!filters || !Object.keys(filters).length)
                     this.filteredProducts = this.products;
-
                 else {
+                    
                     this.filteredProducts = this.products.filter( product => {
                         for( let filterField of Object.keys(filters) ){
-                            if( !filters[filterField].includes( product.category.features[filterField] ) )
-                                return false; 
-                        
+
+                            if( filterField == 'price'){
+                                if(product.price < filters[filterField][0] || product.price > filters[filterField][1] )
+                                    return false;
+                            }
+                            else if( !filters[filterField].includes( product.category.features[filterField] ) )
+                                return false;
+                                                   
                         }
                         return true    
                     });

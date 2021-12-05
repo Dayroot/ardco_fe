@@ -50,17 +50,9 @@
 
             <!-- price filter -->
             <div class="mb-5">
-                <h3 class="filter__title">Precio</h3>
-                <div class="filter__option">
-                    <Slider></Slider>
-                    <!-- <input type="text"
-                        class="input-text"
-                        placeholder="min">
-                    <span class="mx-3 text-gray-500">-</span>
-                    <input type="text"
-                        class="input-text"
-                        placeholder="max"
-                    /> -->
+                <h3 class="filter__title inline mr-3">Precio:</h3><span class="text-gray-400 text-sm">{{value[0]}} - {{value[1]}}</span>
+                <div class="filter__option mt-3">
+                    <Slider v-model="value" :range="true" :min="minRange" :max="maxRange" @click="setActiveFilters('price',value)"/>
                 </div>
             </div>
             <!-- price filter end -->
@@ -103,11 +95,13 @@ export default{
             filters: {
                 colors: [],
                 materials: {},
-                typesOfCrafts: [],
                 departments:{},
             },
             openModal: false,
             activeFilters: {},
+            maxRange:0,
+            minRange:0,
+            value: [0, 0],
         }
     },
     methods: {
@@ -130,11 +124,7 @@ export default{
                     else 
                         this.filters.materials[material] += 1;
                 }
-                //Get the kind of craftsmanship of the product
-                const craftType = product.category.features.craftType || null;
-                if( craftType != null && !this.filters.typesOfCrafts.includes(craftType) )
-                    this.filters.typesOfCrafts.push(craftType);
-
+            
                 //Get the department where the product was made
                 const department = product.category.features.department || null;
                 if( department != null){
@@ -144,6 +134,13 @@ export default{
                     else 
                         this.filters.departments[department] += 1;
                 }
+
+                //get price range
+                const price = product.price || null;
+                if( price != null && price > this.maxRange){
+                    this.maxRange = price; 
+                    this.value[1] = price; 
+                }     
                     
             }
         },
@@ -152,8 +149,10 @@ export default{
         },
 
         setActiveFilters: function(key, value) {
+            if(key == 'price')
+                this.activeFilters[key] = value
 
-            if( !Object.keys(this.activeFilters).includes(key) )
+            else if( !Object.keys(this.activeFilters).includes(key) )
                     this.activeFilters[key] = [value];
             else {
                 const index = this.activeFilters[key].indexOf(value);
@@ -180,6 +179,12 @@ export default{
 </script>
 
 <style lang="css" scoped>
+    .p-slider-horizontal, .p-inputtext {
+    width: 14rem;
+}
+.p-slider-vertical {
+     height: 14rem;
+}
     .close-window {
         @apply text-gray-400 text-lg absolute right-4 top-2 cursor-pointer;
         @apply lg:hidden w-6 h-6 rounded-full flex justify-center items-center;

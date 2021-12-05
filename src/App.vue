@@ -1,5 +1,6 @@
 <template>
-  <router-view/>
+  <router-view
+  />
 </template>
 
 <style lang="css">
@@ -11,3 +12,7 @@
   }
 
 </style>
+
+<script>
+    
+</script>

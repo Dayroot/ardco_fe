@@ -50,20 +50,33 @@ const routes = [
 				meta: {title: 'Ardco'},
 				component:  () => import(/* webpackChunkName: "homepage" */'../modules/customer/pages/HomePage')
 			},
+			{
+				path: 'registrarse',
+				name: 'signUp',
+				meta: {title: 'Registrarse'},
+				component:  () => import(/* webpackChunkName: "signUpPage" */'../modules/shared/pages/SignUpPage')
+			},
+			{
+				path: 'iniciar-sesion',
+				name: 'login',
+				meta: {title: 'Iniciar sesión'},
+				component:  () => import(/* webpackChunkName: "loginPage" */'../modules/shared/pages/LoginPage')
+
+			}
 		]
 	},
-  	{
-		path: '/iniciar-sesion',
-		name: 'login',
-		meta: {title: 'Iniciar sesión'},
-		component:  () => import(/* webpackChunkName: "loginPage" */'../modules/shared/pages/LoginPage')
-	},
-	{
-		path: '/registrarse',
-		name: 'signUp',
-		meta: {title: 'Registrarse'},
-		component:  () => import(/* webpackChunkName: "signUpPage" */'../modules/shared/pages/SignUpPage')
-	},
+  	// {
+	// 	path: '/iniciar-sesion',
+	// 	name: 'login',
+	// 	meta: {title: 'Iniciar sesión'},
+	// 	component:  () => import(/* webpackChunkName: "loginPage" */'../modules/shared/pages/LoginPage')
+	// },
+	// {
+	// 	path: '/registrarse',
+	// 	name: 'signUp',
+	// 	meta: {title: 'Registrarse'},
+	// 	component:  () => import(/* webpackChunkName: "signUpPage" */'../modules/shared/pages/SignUpPage')
+	// },
   
 ]
 

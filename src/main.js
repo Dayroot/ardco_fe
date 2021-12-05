@@ -6,10 +6,14 @@ import { createApolloProvider } from '@vue/apollo-option'
 import { setContext } from 'apollo-link-context'
 import "@/assets/styles/main.css";
 import vClickOutside from "click-outside-vue3";
-// import PrimeVue from 'primevue/config';
-// import Slider from 'primevue/slider';
+import PrimeVue from 'primevue/config';
+import Slider from 'primevue/slider';
+import Carousel from 'primevue/carousel';
 
-app.component('Dialog', Dialog);
+import 'primevue/resources/themes/saga-blue/theme.css';
+import 'primevue/resources/primevue.css';
+import 'primeicons/primeicons.css';
+
 
 const httpLink = createHttpLink({
     uri: 'https://ardco-api-gateway.herokuapp.com/',
@@ -33,7 +37,11 @@ const apolloProvider = new createApolloProvider({
     defaultClient: apolloClient
 });
 
-createApp(App).use(vClickOutside).use(router).use(apolloProvider).mount('#app')
-
-// .component('Slider', Slider)
-// .use(PrimeVue)
+createApp(App)
+.use(vClickOutside)
+.use(PrimeVue)
+.use(router)
+.use(apolloProvider)
+.component('Slider', Slider)
+.component('Carousel', Carousel)
+.mount('#app')

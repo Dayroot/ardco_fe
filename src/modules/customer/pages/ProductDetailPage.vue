@@ -140,6 +140,15 @@
                    <p class="questions__question"></p>
                    <p class="questions__answer"></p>
                </div>
+               <Carousel :value="products" :numVisible="4" :numScroll="2" :responsiveOptions="responsiveOptions">
+                
+                <template #item="producto">
+                        <div class=" h-56 w-56">
+                            <img :src="producto.data.img" alt="">
+                        </div>
+                    
+                </template>
+            </Carousel>
             </div>
         </section>
         <!-- questions and answers end-->
@@ -156,6 +165,47 @@ export default {
     },
     data() {
         return {
+            products:[
+                {
+                    img: "https://exitocol.vtexassets.com/arquivos/ids/6837232-1600-auto?v=637503836659070000&width=1600&height=auto&aspect=true"
+                },
+                {
+                    img: "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cats-trailer-taylor-swift-1563523331.jpg?crop=0.570xw:1.00xh;0.289xw,0&resize=480:*"
+                },
+                {
+                    img: "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cats-trailer-taylor-swift-1563523331.jpg?crop=0.570xw:1.00xh;0.289xw,0&resize=480:*"
+                },
+                {
+                    img: "https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg"
+                },
+                {
+                    img: "https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg"
+                },
+                {
+                    img: "https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg"
+                },
+                {
+                    img: "https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg"
+                },
+
+            ],
+            responsiveOptions: [
+			{
+				breakpoint: '1024px',
+				numVisible: 3,
+				numScroll: 3
+			},
+			{
+				breakpoint: '600px',
+				numVisible: 2,
+				numScroll: 2
+			},
+			{
+				breakpoint: '480px',
+				numVisible: 1,
+				numScroll: 1
+			}
+		],
             publication:{
                 product: {
                     _id:"dtfgavd",
