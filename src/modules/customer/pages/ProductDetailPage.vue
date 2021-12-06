@@ -3,28 +3,31 @@
         <!-- product view -->
         <section class="product">
             <!-- product image -->
-            <article class=" bg-green-500 images">
-                <div>
-                    <img src="https://exitocol.vtexassets.com/arquivos/ids/6837232-1600-auto?v=637503836659070000&width=1600&height=auto&aspect=true" class="images__main">
+            <article class="images">
+                <div class="images__main">
+                    <img :src="mainImg" class="images__single">
                 </div>
-                <div class="images__list">
-                    <div>
-                        <img src="https://exitocol.vtexassets.com/arquivos/ids/6837232-1600-auto?v=637503836659070000&width=1600&height=auto&aspect=true" class="images__single">
-                    </div>
-                    <div>
-                        <img src="https://exitocol.vtexassets.com/arquivos/ids/6837232-1600-auto?v=637503836659070000&width=1600&height=auto&aspect=true" class="images__single">
-                    </div>
-                    <div>
-                        <img src="https://exitocol.vtexassets.com/arquivos/ids/6837232-1600-auto?v=637503836659070000&width=1600&height=auto&aspect=true" class="images__single">
-                    </div>
-                    <div>
-                        <img src="https://exitocol.vtexassets.com/arquivos/ids/6837232-1600-auto?v=637503836659070000&width=1600&height=auto&aspect=true" class="images__single">
-                    </div>
-                </div>
+                <Carousel 
+                    :value="publication.product.imgUrls" 
+                    :numVisible="4" 
+                    :numScroll="1" 
+                    :responsiveOptions="responsiveOptions" 
+                    :circular="true" 
+                    :autoplayInterval="3000"
+                >         
+                    <template #item="image">
+                            <div 
+                                class=" mxs:h-24 mxs:w-24 h-16 w-16">
+                                <img :src="image.data" alt="" class="images__single images__single--thumbnail"
+                                @click="setMainImg(image.data)"
+                            >
+                            </div>      
+                    </template>
+                </Carousel>
             </article>
             <!-- product image end -->
             <!-- product content -->
-            <article>
+            <article class="max-w-xl">
                 <h2 class="product__name">{{publication.product.name}}</h2>
                 <router-link to="" class="review">
                     <div class="review__stars">     
@@ -32,7 +35,7 @@
                             <i class="fas fa-star"></i>
                         </span>
                     </div>
-                    <div class="review__quantity">({{publication.product.total_review}} reseñas)</div>
+                    <div class="review__quantity" @click="setSeeAllReviews">({{publication.product.total_review}} reseñas)</div>
                 </router-link>
                 <div class="space-y-2 capitalize">
                     <p class="space-x-2">
@@ -127,86 +130,102 @@
             </div>
             <div class="question-entry">
                 <label class="question-entry__label">Pregúntale al vendedor</label>
-                <input 
-                    type="text" 
-                    name="question input" 
-                    class="question-entry__input"
-                    placeholder="Escribe tu pregunta..."
-                />
-            </div>
+                <div class="flex gap-6">
+                    <Textarea
+                        :autoResize="true"
+                        rows="1"
+                        cols="100"
+                        class="question-entry__input"
+                        placeholder="Escribe tu pregunta..."
+                    />
+                    <button class="button-1 button-1--v2">
+                        <span class="mr-2">PREGUNTAR</span>
+                    </button>
+                </div>
+            </div>    
             <div class="questions">
-               <label class="question-entry__label">Últimas realizadas</label>
-               <div class="questions__question-wrapper">
-                   <p class="questions__question"></p>
-                   <p class="questions__answer"></p>
-               </div>
-               <Carousel :value="products" :numVisible="4" :numScroll="2" :responsiveOptions="responsiveOptions">
-                
-                <template #item="producto">
-                        <div class=" h-56 w-56">
-                            <img :src="producto.data.img" alt="">
+                <label class="question-entry__label">Últimas preguntas</label>
+                <div v-for="(question, index) in questions.slice(0,5)" :key="index">
+                    <div class="questions__question-wrapper">
+                        <p>{{question.text}}</p>
+                        <div class="questions__answer" v-if="question.answer != null">
+                            <svg class="relative top-1" width="12" height="12" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0.5 0V16.5H17" stroke="currentcolor"/>
+                            </svg>
+                            <span>{{question.answer.text}}<span class="text-xs ml-4">{{question.answer.date}}</span></span>
                         </div>
-                    
-                </template>
-            </Carousel>
+                    </div>
+                </div>
+                <button 
+                class="questions__button-open" @click="setSeeAllQuestions">Ver todas las preguntas</button>
             </div>
         </section>
         <!-- questions and answers end-->
+
+        <!-- <reviews-modal 
+            :publicationId="publication._id"
+        ></reviews-modal> -->
+
+        <questions-modal
+            :seeAllQuestions="seeAllQuestions"
+            :questions="questions"
+            @closedQuestionModal="setSeeAllQuestions"
+        ></questions-modal>
+        
     </div>
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue';
+
 export default {
     props: {
         productId:{
-            type: String,
-           
+            type: String,        
         }
+    },
+    components:{
+        QuestionsModal: defineAsyncComponent(() => import( /* webpackChunkName: "questionsModal" */ '../components/modals/QuestionsModal')),
+        ReviewsModal: defineAsyncComponent(() => import( /* webpackChunkName: "reviewsModal" */ '../components/modals/ReviewsModal')),
     },
     data() {
         return {
-            products:[
-                {
-                    img: "https://exitocol.vtexassets.com/arquivos/ids/6837232-1600-auto?v=637503836659070000&width=1600&height=auto&aspect=true"
-                },
-                {
-                    img: "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cats-trailer-taylor-swift-1563523331.jpg?crop=0.570xw:1.00xh;0.289xw,0&resize=480:*"
-                },
-                {
-                    img: "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cats-trailer-taylor-swift-1563523331.jpg?crop=0.570xw:1.00xh;0.289xw,0&resize=480:*"
-                },
-                {
-                    img: "https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg"
-                },
-                {
-                    img: "https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg"
-                },
-                {
-                    img: "https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg"
-                },
-                {
-                    img: "https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg"
-                },
-
-            ],
             responsiveOptions: [
-			{
+            {
+				breakpoint: '1280px',
+				numVisible: 4,
+				numScroll: 1
+			},
+            {
 				breakpoint: '1024px',
 				numVisible: 3,
-				numScroll: 3
+				numScroll: 1
+			},
+            {
+				breakpoint: '768px',
+				numVisible: 5,
+				numScroll: 1
 			},
 			{
-				breakpoint: '600px',
-				numVisible: 2,
-				numScroll: 2
+				breakpoint: '640px',
+				numVisible: 4,
+				numScroll: 1
 			},
 			{
 				breakpoint: '480px',
-				numVisible: 1,
+				numVisible: 3,
 				numScroll: 1
-			}
-		],
+			},
+        
+            {
+				breakpoint: '320px',
+				numVisible: 2,
+				numScroll: 1
+			},
+
+		    ],
             publication:{
+                _id: "frweffr",
                 product: {
                     _id:"dtfgavd",
                     name:"amarillo, real, huila ", 
@@ -223,7 +242,7 @@ export default {
                             department:"Huila",
                         } 
                     }, 
-                    imgUrls: ["https://exitocol.vtexassets.com/arquivos/ids/6837232-1600-auto?v=637503836659070000&width=1600&height=auto&aspect=true"], 
+                    imgUrls: ["https://exitocol.vtexassets.com/arquivos/ids/6837232-1600-auto?v=637503836659070000&width=1600&height=auto&aspect=true", "https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg", "https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg","https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg","https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cats-trailer-taylor-swift-1563523331.jpg?crop=0.570xw:1.00xh;0.289xw,0&resize=480:*",], 
                     average_review: 4,
                     total_review: 65, 
                 },
@@ -236,14 +255,20 @@ export default {
                     date: "2021-12-4",
                     userId: 1,
                     text: "¿Este producto es aprueba de agua?",
-                    answer: null,
+                    answer: {
+                        date:"2021-12-05",
+                        text:"No, no es aprueba de agua"
+                    },
                     status: "sin responder"
                 },
                 {
                     date: "2021-12-4",
                     userId: 1,
-                    text: "¿Este producto es aprueba de agua?",
-                    answer: null,
+                    text: "¿Este producto es aprueba de agua? y en cuanto tiempo me estaria llegando si hago la compra el dia de hoy?",
+                    answer: {
+                        date:"2021-12-05",
+                        text:"No, no es aprueba de agua"
+                    },
                     status: "sin responder"
                 },
                 {
@@ -305,6 +330,10 @@ export default {
             ],
             like: false,
             quantity: 0,
+            mainImg: "",
+            seeAllQuestions: false,
+            seeAllReviews: false,
+
         }
     },
     methods: {
@@ -318,6 +347,21 @@ export default {
             else if(type == 'subtract' && this.quantity > 0)
                 this.quantity = this.quantity - 1;
         },
+        setMainImg: function(img){
+            if(img == null)
+                 this.mainImg = this.publication.product.imgUrls[0];
+            else    
+                this.mainImg = img;
+        },
+        setSeeAllQuestions: function(){
+            this.seeAllQuestions = !this.seeAllQuestions;
+        },
+        setSeeAllReviews: function(){
+            this.seeAllReviews = !this.seeAllReviews
+        }
+    },
+    mounted() {
+        this.setMainImg();
     },
 
 }
@@ -332,22 +376,21 @@ export default {
 
     .product {
         @apply pt-4 pb-6 flex flex-col lg:flex-row gap-6;
-        /* @apply bg-blue-300; */
+
     }
     .images {
         @apply xl:max-w-lg lg:max-w-md;
     }
-    .images__main {
-        @apply w-full;
-    }
-    .images__list {
-        @apply grid grid-cols-4 gap-4 mt-4;
-    }
-
+    
     .images__single {
-        @apply w-full cursor-pointer border;
+        @apply w-full h-full object-cover cursor-pointer hover:border-color-primary-2 border border-gray-400;
+        
     }
-
+    
+    .images__main {
+        @apply md:h-112 xs:h-96 w-full mb-4;
+    }
+ 
     .product__name {
         @apply md:text-3xl text-2xl font-medium uppercase mb-2 text-color-secondary-2-0;
     }
@@ -361,7 +404,7 @@ export default {
     }
 
     .review__quantity {
-        @apply text-xs text-gray-500 ml-3;
+        @apply text-xs text-gray-500 ml-3 hover:text-color-primary-0;
     }
 
     .product__feature {
@@ -421,29 +464,32 @@ export default {
         @apply text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center;
     }
     .questions-section-container {
-        @apply mt-8 bg-blue-300 text-color-secondary-2-0;
+        @apply mt-8 text-color-secondary-2-0;
     }
     .questions-section__title {
         @apply font-semibold text-2xl;
         @apply flex gap-4 items-center py-2;
-        @apply bg-green-300;
     }
 
     .question-entry {
         @apply flex flex-col py-3 ;
-        @apply bg-red-300;
         
     }
     .question-entry__input {
-        @apply block max-w-lg  ring-1 ring-gray-400  rounded;
-        @apply p-3 focus:ring-2  focus:ring-color-primary-2 focus:outline-none;
+        @apply block max-w-lg  ring-0 ring-gray-400  rounded;
+        @apply hover:border-gray-400;
+        @apply p-2 focus:ring-color-primary-2  focus:ring-2 focus:border-transparent;
     }
 
     .question-entry__label{
         @apply text-lg font-medium mb-2;
     }
-    .questions {
-        @apply flex flex-col py-3;
+    
+    .questions__button-open {
+        @apply text-color-primary-2 cursor-pointer hover:text-color-primary-0 w-40 ml-6;
+    }
+    .reviews {
+        @apply flex flex-col py-3 bg-color-secondary-1-1;
     }
 
 

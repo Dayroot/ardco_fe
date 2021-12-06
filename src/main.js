@@ -1,14 +1,23 @@
+//Vue
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+
+//Apollo
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
 import { createApolloProvider } from '@vue/apollo-option'
 import { setContext } from 'apollo-link-context'
 import "@/assets/styles/main.css";
+
+//Directives
 import vClickOutside from "click-outside-vue3";
+
+//Primevue
 import PrimeVue from 'primevue/config';
 import Slider from 'primevue/slider';
 import Carousel from 'primevue/carousel';
+import Textarea from 'primevue/textarea';
+import Dialog from 'primevue/dialog';
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.css';
@@ -44,4 +53,6 @@ createApp(App)
 .use(apolloProvider)
 .component('Slider', Slider)
 .component('Carousel', Carousel)
+.component('Textarea', Textarea)
+.component('Dialog', Dialog)
 .mount('#app')

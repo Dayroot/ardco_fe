@@ -13,11 +13,11 @@
                         <label class="text-gray-600 mb-2 block">
                             Usuario <span class="text-color-primary-2">*</span>
                         </label>
-                        <input type="username" class="input-box"  v-model="user.username" placeholder="ingresa tu usuario">
+                        <input type="username" class="input-box"  v-model="user.username" placeholder="Ingresa tu usuario">
                     </div>
                     <div>
                         <label class="text-gray-600 mb-2 block">Contraseña <span class="text-color-primary-2">*</span></label>
-                        <input type="password" class="input-box" v-model="user.password" placeholder="ingresa tu contraseña">
+                        <input type="password" class="input-box" v-model="user.password" placeholder="Ingresa tu contraseña">
                     </div>
                 </div>
                 <div class="mt-4">
