@@ -29,13 +29,14 @@ const routes = [
 								name: 'productDetailPage',
 								meta: {title: 'Detalles de producto'},
 								component:  () => import(/* webpackChunkName: "ProductDetailPage" */'../modules/customer/pages/ProductDetailPage'),
-								props: true,
+								props: true
 							},
 							{
 								path: '',
 								name: 'products',
 								meta: {title: 'Productos'},
 								component:  () => import(/* webpackChunkName: "productsPage" */'../modules/customer/pages/ProductsPage'),
+								props: true
 							}
 						]
 
@@ -65,19 +66,7 @@ const routes = [
 			}
 		]
 	},
-  	// {
-	// 	path: '/iniciar-sesion',
-	// 	name: 'login',
-	// 	meta: {title: 'Iniciar sesión'},
-	// 	component:  () => import(/* webpackChunkName: "loginPage" */'../modules/shared/pages/LoginPage')
-	// },
-	// {
-	// 	path: '/registrarse',
-	// 	name: 'signUp',
-	// 	meta: {title: 'Registrarse'},
-	// 	component:  () => import(/* webpackChunkName: "signUpPage" */'../modules/shared/pages/SignUpPage')
-	// },
-  
+
 ]
 
 const router = createRouter({

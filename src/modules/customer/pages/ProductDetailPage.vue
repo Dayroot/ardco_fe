@@ -8,7 +8,7 @@
                     <img :src="mainImg" class="images__single">
                 </div>
                 <Carousel 
-                    :value="publication.product.imgUrls" 
+                    :value="publicationbyProductId.product.imgUrls" 
                     :numVisible="4" 
                     :numScroll="1" 
                     :responsiveOptions="responsiveOptions" 
@@ -28,14 +28,14 @@
             <!-- product image end -->
             <!-- product content -->
             <article class="max-w-xl">
-                <h2 class="product__name">{{publication.product.name}}</h2>
+                <h2 class="product__name">{{publicationbyProductId.product.name}}</h2>
                 <router-link to="" class="review">
                     <div class="review__stars">     
-                        <span v-for="(star,index) in publication.product.average_review" :key="index">
+                        <span v-for="(star,index) in publicationbyProductId.product.average_reviews" :key="index">
                             <i class="fas fa-star"></i>
                         </span>
                     </div>
-                    <div class="review__quantity" @click="setSeeAllReviews">({{publication.product.total_review}} reseñas)</div>
+                    <div class="review__quantity" @click="setSeeAllReviews">({{publicationbyProductId.product.total_reviews}} reseñas)</div>
                 </router-link>
                 <div class="space-y-2 capitalize">
                     <p class="space-x-2">
@@ -44,32 +44,29 @@
                     </p>
                     <p class="space-x-2">
                         <span class="product__feature">Departamento: </span>
-                        <span class="text-gray-600">{{publication.product.category.features.department}}</span>
+                        <span class="text-gray-600">{{publicationbyProductId.product.features.department}}</span>
                     </p>
                     <p class="space-x-2">
                         <span class="product__feature">Categoria: </span>
-                        <span class="text-gray-600">{{publication.product.category.name}}</span>
+                        <span class="text-gray-600">{{publicationbyProductId.product.category.name}}</span>
                     </p>
                     <p class="space-x-2">
                         <span class="product__feature">Material: </span>
-                        <span class="text-gray-600">{{publication.product.category.features.material}}</span>
+                        <span class="text-gray-600">{{publicationbyProductId.product.features.material}}</span>
                     </p>
                 </div>
                 <div class="product__price">
-                    <span class="product__value">${{publication.product.price}}</span>
+                    <span class="product__value">${{publicationbyProductId.product.price}}</span>
                     <!-- <span class="text-gray-500 text-base line-through">$500.00</span> -->
                 </div>
-                <p class="product__description">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim exercitationem quaerat excepturi
-                    labore blanditiis
-                </p>
+                <p class="product__description">{{publicationbyProductId.description}}</p>
             
                 <!-- color -->
                 <div class="mt-4">
                     <h3 class="option__title">Color</h3>
                     <!-- single color -->
                     <div>
-                        <label :style="{'background-color':publication.product.category.features.color }"
+                        <label :style="{'background-color':publicationbyProductId.product.features.color }"
                             class="product__color">
                         </label>
                     </div>
@@ -80,7 +77,7 @@
                 <div class="mt-4">
                     <div class="quantity-selector__title">
                         <h3>Quantity</h3>
-                        <span>({{publication.product.stock}} disponibles)</span>
+                        <span>({{publicationbyProductId.product.stock}} disponibles)</span>
                     </div>
                     <div class="quantity-selector__content">
                         <div class="quantity-selector__button" @click="setQuantity('subtract')">-</div>
@@ -145,7 +142,7 @@
             </div>    
             <div class="questions">
                 <label class="question-entry__label">Últimas preguntas</label>
-                <div v-for="(question, index) in questions.slice(0,5)" :key="index">
+                <div v-for="(question, index) in questionsByPublication.slice(0,5)" :key="index">
                     <div class="box-entry">
                         <p>{{question.text}}</p>
                         <div class="questions__answer" v-if="question.answer != null">
@@ -163,15 +160,15 @@
         <!-- questions and answers end-->
 
         <reviews-modal 
-            :publicationId="publication._id"
-            :average_review="publication.product.average_review"
+            :publicationId="publicationbyProductId.product._id"
+            :average_reviews="publicationbyProductId.product.average_reviews"
             :seeAllReviews="seeAllReviews"
             @closedReviewModal="setSeeAllReviews"
         ></reviews-modal>
 
         <questions-modal
             :seeAllQuestions="seeAllQuestions"
-            :questions="questions"
+            :questions="questionsByPublication"
             @closedQuestionModal="setSeeAllQuestions"
         ></questions-modal>
         
@@ -179,14 +176,22 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 import { defineAsyncComponent } from 'vue';
 import moment from 'moment';
 
 export default {
     props: {
         productId:{
-            type: String,        
+            type: String,
+            // required: true,
+            default: "61aedaad51bb46f11ffb3b1b"        
+        },
+        editOption:{
+            type: Boolean,
+            default: false,
         }
+
     },
     components:{
         QuestionsModal: defineAsyncComponent(() => import( /* webpackChunkName: "questionsModal" */ '../components/modals/QuestionsModal')),
@@ -228,124 +233,106 @@ export default {
 			},
 
 		    ],
-            publication:{
-                _id: "frweffr",
+            publicationbyProductId:{
+                _id: "",
                 product: {
-                    _id:"dtfgavd",
-                    name:"amarillo, real, huila ", 
-                    price: 28000,
-                    stock: 3, 
-                    sold: 8,
+                    _id:"",
+                    name:"", 
+                    price: 0,
+                    stock: 0, 
+                    sold: 0,
                     category: {
-                        _id:"efsb",
-                        name:"sombreros",
-                        features: {
-                            color:"#FBD929",
-                            material:"Palma real",
-                            craftType:"",
-                            department:"Huila",
-                        } 
+                        _id:"",
+                        name:"",
                     }, 
-                    imgUrls: ["https://exitocol.vtexassets.com/arquivos/ids/6837232-1600-auto?v=637503836659070000&width=1600&height=auto&aspect=true", "https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg", "https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg","https://ichef.bbci.co.uk/news/640/cpsprodpb/150EA/production/_107005268_gettyimages-611696954.jpg","https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cats-trailer-taylor-swift-1563523331.jpg?crop=0.570xw:1.00xh;0.289xw,0&resize=480:*",], 
-                    average_review: 4,
-                    total_review: 65, 
+                    features: {
+                            color:"",
+                            material:"",
+                            department:"",
+                    },
+                    imgUrls: [], 
+                    average_reviews: 0,
+                    total_reviews: 0,
+                    discount: 0,
                 },
-                userId: 1,
-                publication_date: "2021-11-29T21:35:19.897Z",
-                description: "Incredible graphics performanceMacBook Air can take on more graphics-intensive projects than ever. For the first time, content creators can  edit and seamlessly play back multiple streams of full‑quality 4K video without dropping a frame."
+                userId: 0,
+                publication_date: "",
+                description: ""
             },
-            questions:[
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    text: "¿Este producto es aprueba de agua?",
-                    answer: {
-                        date:"2021-11-29T21:35:19.897Z",
-                        text:"No, no es aprueba de agua"
-                    },
-                    status: "sin responder"
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    text: "¿Este producto es aprueba de agua? y en cuanto tiempo me estaria llegando si hago la compra el dia de hoy?",
-                    answer: {
-                        date:"2021-11-29T21:35:19.897Z",
-                        text:"No, no es aprueba de agua"
-                    },
-                    status: "sin responder"
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    text: "¿Este producto es aprueba de agua?",
-                    answer: null,
-                    status: "sin responder"
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    text: "¿Este producto es aprueba de agua?",
-                    answer: null,
-                    status: "sin responder"
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    text: "¿Este producto es aprueba de agua?",
-                    answer: null,
-                    status: "sin responder"
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    text: "¿Este producto es aprueba de agua?",
-                    answer: null,
-                    status: "sin responder"
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    text: "¿Este producto es aprueba de agua?",
-                    answer: null,
-                    status: "sin responder"
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    text: "¿Este producto es aprueba de agua?",
-                    answer: null,
-                    status: "sin responder"
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    text: "¿Este producto es aprueba de agua?",
-                    answer: null,
-                    status: "sin responder"
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    text: "¿Este producto es aprueba de agua?",
-                    answer: null,
-                    status: "sin responder"
-                }
-            ],
+            questionsByPublication:[],
             like: false,
             quantity: 0,
             mainImg: "",
             seeAllQuestions: false,
             seeAllReviews: false,
-
         }
+    },
+    apollo: {
+        publicationbyProductId: {
+            query: gql`
+                query ($productId: String!) {
+                    publicationbyProductId(productId: $productId) {
+                        _id
+                        product {
+                            _id
+                            name
+                            price
+                            stock 
+                            sold
+                            category {
+                                _id
+                                name
+                            }
+                            features {
+                                color
+                                material
+                                department
+                            }
+                            imgUrls 
+                            average_reviews
+                            total_reviews
+                            discount
+                        }
+                        userId
+                        publication_date
+                        description
+                    }
+                }
+            `,
+            variables(){
+                return {
+                    productId: this.productId,
+                };
+            }
+        },
+        questionsByPublication: {
+            query: gql`
+                query ($publicationId: String!) {
+                    questionsByPublication(publicationId: $publicationId) {
+                         _id
+                        date
+                        text
+                        answer {
+                            _id
+                            date
+                            text
+                        } 
+                    }
+                }
+            `,
+            variables(){
+                return {
+                    publicationId: this.publicationbyProductId._id,
+                };
+            }
+        },
     },
     methods: {
         setLike: function() {
             this.like = !this.like;
         },
         setQuantity: function(type) {
-            if(type == 'add' && this.quantity < this.publication.product.stock)
+            if(type == 'add' && this.quantity < this.publicationbyProductId.product.stock)
                 this.quantity = this.quantity + 1;
             
             else if(type == 'subtract' && this.quantity > 0)
@@ -353,7 +340,7 @@ export default {
         },
         setMainImg: function(img){
             if(img == null)
-                 this.mainImg = this.publication.product.imgUrls[0];
+                 this.mainImg = this.publicationbyProductId.product.imgUrls[0];
             else    
                 this.mainImg = img;
         },

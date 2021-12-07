@@ -49,14 +49,11 @@ export default {
             credentialError: false,
         }
     },
-
-
     methods: {
         setCredentialError: function(){
             this.credentialError = !this.credentialError;
         },
         processLogIn: async function() { 
-            console.log(this.user);
             await this.$apollo
                 .mutate({
                     mutation: gql`
@@ -85,6 +82,9 @@ export default {
                     this.setCredentialError();
                 });
         }
+    },
+    created() {
+        localStorage.clear();
     }
 
 }

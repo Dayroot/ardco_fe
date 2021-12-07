@@ -111,12 +111,12 @@ export default{
             for(let product of this.products){
 
                 //Get color product
-                const color = product.category.features.color || null;
+                const color = product.features.color || null;
                 if( color != null && !this.filters.colors.includes(color) )
                     this.filters.colors.push(color);
                 
                 //Get product material
-                const material = product.category.features.material || null;
+                const material = product.features.material || null;
                 if( material != null){
                     const materials = Object.keys(this.filters.materials);
                     if(!materials.includes(material))
@@ -126,7 +126,7 @@ export default{
                 }
             
                 //Get the department where the product was made
-                const department = product.category.features.department || null;
+                const department = product.features.department || null;
                 if( department != null){
                     const departments = Object.keys(this.filters.departments);
                     if(!departments.includes(department))

@@ -7,10 +7,10 @@
         <div class="reviews reviews-responsive">
             <div class="reviews__rating">
                 <div>
-                    <p class=" text-7xl">{{average_review}}</p>
+                    <p class=" text-7xl">{{average_reviews}}</p>
                     <div>
                         <div class="text-xl flex gap-1 text-yellow-400">     
-                            <span v-for="(star,index) in average_review" :key="index">
+                            <span v-for="(star,index) in average_reviews" :key="index">
                                 <i class="fas fa-star"></i>
                             </span>
                         </div>
@@ -36,7 +36,7 @@
                 <button :class="{'button-3':true, 'button-3-active': positive}" @click="setReviewsPage('positive')">Positivas</button>
                 <button :class="{'button-3':true, 'button-3-active': negative}" @click="setReviewsPage('negative')">Negativas</button>
             </nav>
-            <div v-for="(review, index) in reviews" :key="index">
+            <div v-for="(review, index) in reviewsByPublication" :key="index">
                 <div class="box-entry">
                     <div class="review__stars">     
                         <span v-for="(star,index) in review.stars" :key="index">
@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 import moment from 'moment';
 export default {
     props: {
@@ -63,81 +64,14 @@ export default {
             type: Boolean,
             required: true
         },
-        average_review: {
+        average_reviews: {
             type: Number,
             required: true
         }
     },
     data() {
         return {
-            reviews:[
-                {
-                    date: "2020-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                 {
-                    date: "2021-09-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                 {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                 {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                 {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 2,
-                    text: "Un producto bastante regular",
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 4,
-                    text: "Excelente producto, pero sus materiales no son los mejores",
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-            ],
+            reviewsByPublication:[ ],
             reviewsRating: {
                 1: [0,0],
                 2: [0,0],
@@ -151,15 +85,35 @@ export default {
             negative: false,
             positive: false,
             all: false,
+            integerStars:0,
+            decimalStar:0,
         }
     },
-    methods: {
-        
-
+    apollo: {
+        reviewsByPublication: {
+            query: gql`
+                query ($publicationId: String!) {
+                    reviewsByPublication(publicationId: $publicationId) {
+                        _id
+                        date
+                        userId
+                        stars
+                        text
+                    }
+                }
+            `,
+            variables(){
+                return {
+                    publicationId: this.publicationId,
+                };
+            }
+        },
+    },
+    methods: {    
         setReviewsRating: function(){
-            for(let review of this.reviews){
+            for(let review of this.reviewsByPublication){
 
-                const numb = (1/this.reviews.length)*100;
+                const numb = (1/review.length)*100;
                 const value = Math.round((numb + Number.EPSILON) * 100) / 100;;
                 this.reviewsRating[review.stars][0] += value;
                 this.reviewsRating[review.stars][1] += 1;
@@ -170,28 +124,37 @@ export default {
                 else
                     this.negativeReviews.push(review);   
             }
-            this.reviewsAll = this.reviews;
+            this.reviewsAll = this.reviewsByPublication;
         },
         setReviewsPage: function(selection){
             if(selection == 'all'){
                 this.negative = false;
                 this.positive = false;
                 this.all = !this.all;
-                this.reviews = this.reviewsAll;
+                this.reviewsByPublication = this.reviewsAll;
             }
             else if(selection == 'positive'){
                 this.negative = false;
                 this.all = false;
                 this.positive = !this.positive;
-                this.reviews = this.positiveReviews;
+                this.reviewsByPublication = this.positiveReviews;
             }
             else if(selection == 'negative'){
                 this.positive = false;
                 this.all = false;
                 this.negative = !this.negative;
-                this.reviews = this.negativeReviews;
+                this.reviewsByPublication = this.negativeReviews;
             }
 
+        },
+        setStars: function() {
+            const stars = this.product.average_reviews;
+            if(stars%1 > 0){
+                this.decimalStar = 1;
+                this.integerStars = Math.floor(stars);
+            }
+            else
+                this.integerStars = Math.round(stars);
         }
     },
     watch:{

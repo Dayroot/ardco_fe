@@ -64,12 +64,11 @@ export default {
         setCredentialError: function(){
             this.signUpError = !this.signUpError;
         },
-        processSignUp: async function() {
-        console.log("ddddddddddddddddddddd");    
+        processSignUp: async function() {    
         await this.$apollo
             .mutate({
                 mutation: gql`
-                    mutation($userInput: SingUpInput){
+                    mutation($userInput: SingUpInput!){
                         signUpUser(userInput: $userInput) {
                             refresh
                             access

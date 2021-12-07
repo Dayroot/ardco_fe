@@ -48,12 +48,12 @@
 
             <div class="review">
                 <div class="review__stars">     
-                    <span v-for="(star,index) in product.average_review" :key="index">
+                    <span v-for="(star,index) in integerStars" :key="index">
                         <i class="fas fa-star"></i>
                     </span>
                 </div>
 
-                <div class="review__quantity">({{product.total_review}})</div>
+                <div class="review__quantity">({{product.total_reviews}})</div>
             </div>
 
         </div>
@@ -85,12 +85,26 @@ export default{
     data() {
         return {
             like:false,
+            integerStars:0,
+            decimalStar:0,
         }
     },
     methods: {
         setLike: function() {
             this.like = !this.like;
+        },
+        setStars: function() {
+            const stars = this.product.average_reviews;
+            if(stars%1 > 0){
+                this.decimalStar = 1;
+                this.integerStars = Math.floor(stars);
+            }
+            else
+                this.integerStars = Math.round(stars);
         }
+    },
+    created() {
+        this.setStars();
     },
 }
 </script>
