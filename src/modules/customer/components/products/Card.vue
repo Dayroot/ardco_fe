@@ -143,10 +143,6 @@ export default{
         @apply flex items-center;
     }
 
-    .review__stars {
-        @apply flex gap-1 text-sm text-yellow-400;
-    }
-
     .review__quantity {
         @apply text-xs text-gray-500 ml-3;
     }

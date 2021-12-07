@@ -9,8 +9,9 @@ import { createApolloProvider } from '@vue/apollo-option'
 import { setContext } from 'apollo-link-context'
 import "@/assets/styles/main.css";
 
-//Directives
+//External functions
 import vClickOutside from "click-outside-vue3";
+import moment from 'moment';
 
 //Primevue
 import PrimeVue from 'primevue/config';
@@ -18,6 +19,7 @@ import Slider from 'primevue/slider';
 import Carousel from 'primevue/carousel';
 import Textarea from 'primevue/textarea';
 import Dialog from 'primevue/dialog';
+import ProgressBar from 'primevue/progressbar';
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.css';
@@ -46,6 +48,10 @@ const apolloProvider = new createApolloProvider({
     defaultClient: apolloClient
 });
 
+require('moment/locale/es');
+moment.locale('es');
+
+
 createApp(App)
 .use(vClickOutside)
 .use(PrimeVue)
@@ -55,4 +61,5 @@ createApp(App)
 .component('Carousel', Carousel)
 .component('Textarea', Textarea)
 .component('Dialog', Dialog)
+.component('ProgressBar', ProgressBar)
 .mount('#app')

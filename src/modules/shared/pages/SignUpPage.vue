@@ -1,6 +1,6 @@
  <!-- form wrapper --> 
  <template>  
-    <div class="container py-16">
+    <div class="container pt-12">
         <div class="max-w-lg mx-auto shadow px-6 py-7 rounded overflow-hidden">
             <h2 class="text-2xl uppercase font-medium mb-6">
                 Crear una cuenta
@@ -54,18 +54,22 @@ export default {
                 username: "",
                 password: "",
                 fullname: "",
-                email: "",
-            }
+                email: ""
+            },
+            signUpError: false,
         }
     },
 
     methods: {
+        setCredentialError: function(){
+            this.signUpError = !this.signUpError;
+        },
         processSignUp: async function() {
-        console.log(this.user);    
+        console.log("ddddddddddddddddddddd");    
         await this.$apollo
             .mutate({
                 mutation: gql`
-                    mutation($userInput: SignUpInput!){
+                    mutation($userInput: SingUpInput){
                         signUpUser(userInput: $userInput) {
                             refresh
                             access
@@ -78,7 +82,6 @@ export default {
                 },
             })
             .then((result) => {
-                console.log(result.data);
                 let dataLogIn = {
                     username: this.user.username,
                     token_access: result.data.signUpUser.access,
@@ -88,7 +91,7 @@ export default {
                 this.$emit("completedSignUp", dataLogIn);
             })
             .catch((error) => {
-                alert("ERROR: Fallo en el registro.");
+                this.setCredentialError();
             });
         }
     }

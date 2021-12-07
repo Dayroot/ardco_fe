@@ -146,13 +146,13 @@
             <div class="questions">
                 <label class="question-entry__label">Últimas preguntas</label>
                 <div v-for="(question, index) in questions.slice(0,5)" :key="index">
-                    <div class="questions__question-wrapper">
+                    <div class="box-entry">
                         <p>{{question.text}}</p>
                         <div class="questions__answer" v-if="question.answer != null">
                             <svg class="relative top-1" width="12" height="12" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0.5 0V16.5H17" stroke="currentcolor"/>
                             </svg>
-                            <span>{{question.answer.text}}<span class="text-xs ml-4">{{question.answer.date}}</span></span>
+                            <span>{{question.answer.text}}<span class="text-xs ml-4">{{moment(question.answer.date).format("DD/MM/YYYY ")}}</span></span>
                         </div>
                     </div>
                 </div>
@@ -162,9 +162,12 @@
         </section>
         <!-- questions and answers end-->
 
-        <!-- <reviews-modal 
+        <reviews-modal 
             :publicationId="publication._id"
-        ></reviews-modal> -->
+            :average_review="publication.product.average_review"
+            :seeAllReviews="seeAllReviews"
+            @closedReviewModal="setSeeAllReviews"
+        ></reviews-modal>
 
         <questions-modal
             :seeAllQuestions="seeAllQuestions"
@@ -177,6 +180,7 @@
 
 <script>
 import { defineAsyncComponent } from 'vue';
+import moment from 'moment';
 
 export default {
     props: {
@@ -247,81 +251,81 @@ export default {
                     total_review: 65, 
                 },
                 userId: 1,
-                publication_date: "2021-12-4",
+                publication_date: "2021-11-29T21:35:19.897Z",
                 description: "Incredible graphics performanceMacBook Air can take on more graphics-intensive projects than ever. For the first time, content creators can  edit and seamlessly play back multiple streams of full‑quality 4K video without dropping a frame."
             },
             questions:[
                 {
-                    date: "2021-12-4",
+                    date: "2021-11-29T21:35:19.897Z",
                     userId: 1,
                     text: "¿Este producto es aprueba de agua?",
                     answer: {
-                        date:"2021-12-05",
+                        date:"2021-11-29T21:35:19.897Z",
                         text:"No, no es aprueba de agua"
                     },
                     status: "sin responder"
                 },
                 {
-                    date: "2021-12-4",
+                    date: "2021-11-29T21:35:19.897Z",
                     userId: 1,
                     text: "¿Este producto es aprueba de agua? y en cuanto tiempo me estaria llegando si hago la compra el dia de hoy?",
                     answer: {
-                        date:"2021-12-05",
+                        date:"2021-11-29T21:35:19.897Z",
                         text:"No, no es aprueba de agua"
                     },
                     status: "sin responder"
                 },
                 {
-                    date: "2021-12-4",
+                    date: "2021-11-29T21:35:19.897Z",
                     userId: 1,
                     text: "¿Este producto es aprueba de agua?",
                     answer: null,
                     status: "sin responder"
                 },
                 {
-                    date: "2021-12-4",
+                    date: "2021-11-29T21:35:19.897Z",
                     userId: 1,
                     text: "¿Este producto es aprueba de agua?",
                     answer: null,
                     status: "sin responder"
                 },
                 {
-                    date: "2021-12-4",
+                    date: "2021-11-29T21:35:19.897Z",
                     userId: 1,
                     text: "¿Este producto es aprueba de agua?",
                     answer: null,
                     status: "sin responder"
                 },
                 {
-                    date: "2021-12-4",
+                    date: "2021-11-29T21:35:19.897Z",
                     userId: 1,
                     text: "¿Este producto es aprueba de agua?",
                     answer: null,
                     status: "sin responder"
                 },
                 {
-                    date: "2021-12-4",
+                    date: "2021-11-29T21:35:19.897Z",
                     userId: 1,
                     text: "¿Este producto es aprueba de agua?",
                     answer: null,
                     status: "sin responder"
                 },
                 {
-                    date: "2021-12-4",
+                    date: "2021-11-29T21:35:19.897Z",
                     userId: 1,
                     text: "¿Este producto es aprueba de agua?",
                     answer: null,
                     status: "sin responder"
                 },
                 {
-                    date: "2021-12-4",
+                    date: "2021-11-29T21:35:19.897Z",
                     userId: 1,
                     text: "¿Este producto es aprueba de agua?",
                     answer: null,
                     status: "sin responder"
                 },
                 {
-                    date: "2021-12-4",
+                    date: "2021-11-29T21:35:19.897Z",
                     userId: 1,
                     text: "¿Este producto es aprueba de agua?",
                     answer: null,
@@ -360,6 +364,9 @@ export default {
             this.seeAllReviews = !this.seeAllReviews
         }
     },
+    created: function(){
+        this.moment = moment;
+    },
     mounted() {
         this.setMainImg();
     },
@@ -397,10 +404,6 @@ export default {
 
     .review {
         @apply flex items-center mb-4;
-    }
-
-    .review__stars {
-        @apply flex gap-1 text-sm text-yellow-400;
     }
 
     .review__quantity {
@@ -487,9 +490,6 @@ export default {
     
     .questions__button-open {
         @apply text-color-primary-2 cursor-pointer hover:text-color-primary-0 w-40 ml-6;
-    }
-    .reviews {
-        @apply flex flex-col py-3 bg-color-secondary-1-1;
     }
 
 

@@ -122,3 +122,12 @@
     @apply text-gray-600 font-medium rounded uppercase text-sm; 
 }
 /* button 2 end */
+
+/* button 3 */
+.button-3 {
+    @apply px-4 xs:px-12 py-1 border-b-2 hover:text-color-primary-0 transition; 
+}
+.button-3-active {
+    @apply  border-color-primary-2 text-color-primary-0;
+}
+/* button 3 end */

@@ -104,6 +104,11 @@ module.exports = {
 			'40%': '40%',
 			'45%': '45%',
 			'50%': '50%',
+			'60%': '60%',
+			'70%': '70%',
+			'80%': '80%',
+			'90%': '90%',
+			'100%': '100%',
 
 		},
 		backgroundSize: {
@@ -135,7 +140,7 @@ module.exports = {
 			ringWidth: ['hover'],
 			ringColor: ['hover'],
 			borderWidth: ['hover', 'focus'],
-			borderColor: ['hover'],
+			borderColor: ['hover','active'],
 			outline: ['hover'],
 		},
 	},
