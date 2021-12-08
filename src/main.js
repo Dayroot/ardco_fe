@@ -18,6 +18,7 @@ import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 //Primevue
+import Galleria from 'primevue/galleria';
 import PrimeVue from 'primevue/config';
 import Slider from 'primevue/slider';
 import Carousel from 'primevue/carousel';
@@ -75,4 +76,5 @@ createApp(App)
 .component('Dialog', Dialog)
 .component('ProgressBar', ProgressBar)
 .component('ColorPicker', ColorPicker)
+.component('Galleria', Galleria)
 .mount('#app')

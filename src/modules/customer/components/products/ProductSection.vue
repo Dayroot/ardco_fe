@@ -1,4 +1,9 @@
 <template>
+    <loading v-model:active="isLoading"
+                :can-cancel="true"
+                :on-cancel="onCancel"
+                :is-full-page="fullPage"/>
+
     <div class="flex">
         <!-- filter bar -->
         <div class="filter">
@@ -50,6 +55,8 @@
 
 <script>
 
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 import { defineAsyncComponent } from 'vue';
 
 export default{
@@ -62,6 +69,7 @@ export default{
     components:{
         Card: defineAsyncComponent(() => import( /* webpackChunkName: "card" */ './Card')),
         ProductFilter: defineAsyncComponent(() => import( /* webpackChunkName: "productFilter" */ './ProductFilter')),
+        Loading, 
     },
     data: function(){
         return {
@@ -69,10 +77,14 @@ export default{
             openModalFilter: false,
             filteredProducts: [],
             noProducts: false,
+            isLoading: false,
+            fullPage: true, 
         }   
     },
     methods: {
-
+        onCancel() {
+            console.log('User cancelled the loader.')
+        },
         filterProducts: function(filters){
             if(!filters || !Object.keys(filters).length)
                 this.filteredProducts = this.products;
@@ -131,7 +143,12 @@ export default{
             }
         }
     },
+
     mounted() {
+        this.isLoading = true;
+        setTimeout(() => {
+                    this.isLoading = false
+                }, 300);
         this.filterProducts();
     },
     watch:{
