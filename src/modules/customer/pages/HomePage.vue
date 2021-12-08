@@ -1,11 +1,12 @@
 <template>
     <Galleria
-        :showThumbnailNavigators="false"
+        :showIndicatorsOnItem="true"
+        :showIndicators="true"
+        :showThumbnails="false"
         :value="bannerImgs" 
-        :numVisible="1" 
-        :numScroll="1" 
-        :circular="true" 
-        :autoplayInterval="3000"
+        :circular="true"
+        :autoPlay="true"
+        :transitionInterval="1000"
     >         
         <template #item="image">
                 <banner 
@@ -27,12 +28,3 @@ export default {
     },
 }
 </script>
-
-<style lang="css" scoped>
-    .p-carousel {
-        @apply w-screen
-    }
-    .p-carousel-items-content{
-        @apply w-screen
-    }
-</style>

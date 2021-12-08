@@ -4,7 +4,10 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="menu-button-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
-            <span>Categorias</span>
+            <span
+                @mouseenter="setActivateCategories"
+                @mousedown="setActivateCategories"
+            >Categorias</span>
         </router-link>
         <router-link :to="{name:'signUp'}" class="menu-button">
             <svg xmlns="http://www.w3.org/2000/svg" class="menu-button-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -28,6 +31,20 @@
     </nav>
 </template>
 
+<script>
+export default {
+    data() {
+        return {
+            activateCategories: false,
+        }
+    },
+    methods: {
+        setActivateCategories: function(){
+            this.activateCategories = !this.activateCategories;
+        }
+    },
+}
+</script>
 <style lang="css" scoped>
 .menu {
     @apply hidden md:flex items-center justify-center ;

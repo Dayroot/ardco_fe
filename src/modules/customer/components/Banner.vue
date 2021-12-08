@@ -10,7 +10,7 @@
             </p>
         </div>
         <div>
-            <img class="banner__img" src="../../../assets/images/picture-1.jpg" alt="">
+            <img class="banner__img" :src="imgUrl" alt="">
         </div>
     </div>
     <!-- banner end -->
@@ -21,6 +21,11 @@ export default {
         imgUrl: {
             type: String,
             required: true
+        }
+    },
+    watch: {
+        imgUrl: function(){
+            console.log(imgUrl);
         }
     }
 }
