@@ -49,13 +49,12 @@ export default {
             credentialError: false,
         }
     },
-
-
     methods: {
         setCredentialError: function(){
             this.credentialError = !this.credentialError;
         },
         processLogIn: async function() { 
+            console.log("aqui");
             console.log(this.user);
             await this.$apollo
                 .mutate({
@@ -85,6 +84,9 @@ export default {
                     this.setCredentialError();
                 });
         }
+    },
+    created() {
+        //localStorage.clear();
     }
 
 }

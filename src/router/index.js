@@ -1,4 +1,6 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router';
+import isOwnsPublication from './guards/verifyPublicationOwner';
+import isAuthenticatedUser from './guards/verifyUserAuth'
 
 const routes = [
 
@@ -27,15 +29,23 @@ const routes = [
 							{
 								path: ':productId',
 								name: 'productDetailPage',
-								meta: {title: 'Detalles de producto'},
+								meta: {title: 'Detalles de producto', requiresAuth: false},
 								component:  () => import(/* webpackChunkName: "ProductDetailPage" */'../modules/customer/pages/ProductDetailPage'),
-								props: true,
+								props: ( route ) => {
+	
+									if( isOwnsPublication(route) ){
+										return {...route.params, editOption: true}
+									}
+		
+									return { ...route.params};
+								}
 							},
 							{
 								path: '',
 								name: 'products',
-								meta: {title: 'Productos'},
+								meta: {title: 'Productos', requiresAuth: false},
 								component:  () => import(/* webpackChunkName: "productsPage" */'../modules/customer/pages/ProductsPage'),
+								props: true
 							}
 						]
 
@@ -47,37 +57,25 @@ const routes = [
 			{
 				path: '',
 				name: 'home',
-				meta: {title: 'Ardco'},
+				meta: {title: 'Ardco', requiresAuth: false},
 				component:  () => import(/* webpackChunkName: "homepage" */'../modules/customer/pages/HomePage')
 			},
 			{
 				path: 'registrarse',
 				name: 'signUp',
-				meta: {title: 'Registrarse'},
+				meta: {title: 'Registrarse', requiresAuth: false},
 				component:  () => import(/* webpackChunkName: "signUpPage" */'../modules/shared/pages/SignUpPage')
 			},
 			{
 				path: 'iniciar-sesion',
 				name: 'login',
-				meta: {title: 'Iniciar sesión'},
+				meta: {title: 'Iniciar sesión', requiresAuth: false},
 				component:  () => import(/* webpackChunkName: "loginPage" */'../modules/shared/pages/LoginPage')
 
 			}
 		]
 	},
-  	// {
-	// 	path: '/iniciar-sesion',
-	// 	name: 'login',
-	// 	meta: {title: 'Iniciar sesión'},
-	// 	component:  () => import(/* webpackChunkName: "loginPage" */'../modules/shared/pages/LoginPage')
-	// },
-	// {
-	// 	path: '/registrarse',
-	// 	name: 'signUp',
-	// 	meta: {title: 'Registrarse'},
-	// 	component:  () => import(/* webpackChunkName: "signUpPage" */'../modules/shared/pages/SignUpPage')
-	// },
-  
+
 ]
 
 const router = createRouter({
@@ -85,10 +83,20 @@ const router = createRouter({
 	routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach( async(to, from, next) => {
     document.title = to.meta.title
-    next()
-  })
+	console.log(localStorage.getItem("token_access"));
+	next()
+    // var is_auth = await isAuthenticatedUser();
+
+	// if( is_auth == to.meta.requiresAuth || !is_auth == !to.meta.requiresAuth) 
+	// 	next()
+
+	// if( !is_auth && to.meta.requiresAuth){
+	// 	alert("Su sesión expiró, por favor vuelva a iniciar sesión");
+	// 	nex({name: 'login'})
+	// }
+})
 
 
 export default router

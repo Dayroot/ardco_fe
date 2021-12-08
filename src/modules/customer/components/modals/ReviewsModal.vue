@@ -7,11 +7,14 @@
         <div class="reviews reviews-responsive">
             <div class="reviews__rating">
                 <div>
-                    <p class=" text-7xl">{{average_review}}</p>
+                    <p class=" text-7xl">{{average_reviews}}</p>
                     <div>
                         <div class="text-xl flex gap-1 text-yellow-400">     
-                            <span v-for="(star,index) in average_review" :key="index">
+                            <span v-for="(star,index) in integerStars" :key="index">
                                 <i class="fas fa-star"></i>
+                            </span>
+                            <span v-if="decimalStar > 0">
+                                <i class="fas fa-star-half"></i>
                             </span>
                         </div>
                     </div>
@@ -36,14 +39,14 @@
                 <button :class="{'button-3':true, 'button-3-active': positive}" @click="setReviewsPage('positive')">Positivas</button>
                 <button :class="{'button-3':true, 'button-3-active': negative}" @click="setReviewsPage('negative')">Negativas</button>
             </nav>
-            <div v-for="(review, index) in reviews" :key="index">
+            <div v-for="(review, index) in reviewsByPublication" :key="index">
                 <div class="box-entry">
                     <div class="review__stars">     
                         <span v-for="(star,index) in review.stars" :key="index">
                             <i class="fas fa-star"></i>
                         </span>
                     </div>
-                    <p>{{review.text}}<span class="ml-6 text-sm font-light text-gray-400">{{review.date}}</span></p>
+                    <p>{{review.text}}<span class="ml-6 text-sm font-light text-gray-400">{{moment(review.date, "YYYYMMDD").fromNow()}}</span></p>
                 </div>
             </div>
         </div>       
@@ -52,6 +55,7 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 import moment from 'moment';
 export default {
     props: {
@@ -63,81 +67,14 @@ export default {
             type: Boolean,
             required: true
         },
-        average_review: {
+        average_reviews: {
             type: Number,
             required: true
         }
     },
     data() {
         return {
-            reviews:[
-                {
-                    date: "2020-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                 {
-                    date: "2021-09-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                 {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                 {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                 {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 2,
-                    text: "Un producto bastante regular",
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 4,
-                    text: "Excelente producto, pero sus materiales no son los mejores",
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-                {
-                    date: "2021-11-29T21:35:19.897Z",
-                    userId: 1,
-                    stars: 5,
-                    text: "Muy buen producto, ha sido muy util.",
-                },
-            ],
+            reviewsByPublication:[ ],
             reviewsRating: {
                 1: [0,0],
                 2: [0,0],
@@ -151,51 +88,86 @@ export default {
             negative: false,
             positive: false,
             all: false,
+            integerStars:0,
+            decimalStar:0,
         }
     },
-    methods: {
-        
-
+    methods: {    
         setReviewsRating: function(){
-            for(let review of this.reviews){
-
-                const numb = (1/this.reviews.length)*100;
-                const value = Math.round((numb + Number.EPSILON) * 100) / 100;;
+            this.positiveReviews = [];
+            this.negativeReviews = [];
+            for(let review of this.reviewsByPublication){
+                const numb = (1/this.reviewsByPublication.length)*100;
+                const value = Math.round((numb + Number.EPSILON) * 100) / 100;
                 this.reviewsRating[review.stars][0] += value;
                 this.reviewsRating[review.stars][1] += 1;
-
-                review.date = moment(review.date,"YYYYMMDD").fromNow();
                 if(review.stars >= 3)
                     this.positiveReviews.push(review);
                 else
                     this.negativeReviews.push(review);   
             }
-            this.reviewsAll = this.reviews;
+            this.reviewsAll = this.reviewsByPublication;
         },
         setReviewsPage: function(selection){
             if(selection == 'all'){
                 this.negative = false;
                 this.positive = false;
                 this.all = !this.all;
-                this.reviews = this.reviewsAll;
+                this.reviewsByPublication = this.reviewsAll;
             }
             else if(selection == 'positive'){
                 this.negative = false;
                 this.all = false;
                 this.positive = !this.positive;
-                this.reviews = this.positiveReviews;
+                this.reviewsByPublication = this.positiveReviews;
             }
             else if(selection == 'negative'){
                 this.positive = false;
                 this.all = false;
                 this.negative = !this.negative;
-                this.reviews = this.negativeReviews;
+                this.reviewsByPublication = this.negativeReviews;
             }
 
+        },
+        setStars: function() {
+            const stars = this.average_reviews;
+            if(stars%1 > 0){
+                this.decimalStar = 1;
+                this.integerStars = Math.floor(stars);
+            }
+            else
+                this.integerStars = Math.round(stars);
+        },
+        getData: function() {
+            this.$apollo.query({
+                query: gql`
+                    query ($publicationId: String!) {
+                        reviewsByPublication(publicationId: $publicationId) {
+                            _id
+                            date
+                            userId
+                            stars
+                            text
+                        }
+                    }
+                `,
+                variables: {
+                    publicationId: this.publicationId,
+                }
+            })
+            .then( response => {
+                this.reviewsByPublication = response.data.reviewsByPublication;
+                this.setReviewsRating();
+                this.setStars();
+            })
+            .catch(e => {
+                console.log(JSON.stringify(e, null, 2));
+            });
         }
     },
     watch:{
        seeAllReviews: function(newVal, oldVal){
+            this.getData();
            if( newVal == false && oldVal== true){
                this.$emit('closedReviewModal');
            }
@@ -203,10 +175,12 @@ export default {
     },
     created: function(){
         this.moment = moment;
+        this.getData();
+        
     },
-    mounted() {
-        this.setReviewsRating();
-    },
+    
+
+    
 }
 </script>
 

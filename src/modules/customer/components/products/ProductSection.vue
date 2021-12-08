@@ -86,30 +86,28 @@ export default{
             console.log('User cancelled the loader.')
         },
         filterProducts: function(filters){
-            
-                if(!filters || !Object.keys(filters).length)
-                    this.filteredProducts = this.products;
-                else {
-                    
-                    this.filteredProducts = this.products.filter( product => {
-                        for( let filterField of Object.keys(filters) ){
+            if(!filters || !Object.keys(filters).length)
+                this.filteredProducts = this.products;
+            else {     
+                this.filteredProducts = this.products.filter( product => {
+                    for( let filterField of Object.keys(filters) ){
 
-                            if( filterField == 'price'){
-                                if(product.price < filters[filterField][0] || product.price > filters[filterField][1] )
-                                    return false;
-                            }
-                            else if( !filters[filterField].includes( product.category.features[filterField] ) )
+                        if( filterField == 'price'){
+                            if(product.price < filters[filterField][0] || product.price > filters[filterField][1] )
                                 return false;
-                                                   
                         }
-                        return true    
-                    });
-                } 
-                
-                if(!this.filteredProducts.length)
-                    this.noProducts = true;
-                else
-                    this.noProducts = false;
+                        else if( !filters[filterField].includes( product.category.features[filterField] ) )
+                            return false;
+                                                
+                    }
+                    return true    
+                });
+            } 
+            
+            if(!this.filteredProducts.length)
+                this.noProducts = true;
+            else
+                this.noProducts = false;
         },
     },
     watch:{
@@ -153,6 +151,11 @@ export default{
                 }, 300);
         this.filterProducts();
     },
+    watch:{
+        products: function(){
+            this.filterProducts();
+        }
+    }
 }
 </script>
 
@@ -164,7 +167,7 @@ export default{
 
     .sort-button {
         @apply focus:outline-none;
-        @apply w-32 text-sm text-gray-600 px-4 py-3;
+        @apply w-34 text-sm text-gray-600 px-4 py-2;
         @apply border-gray-300 shadow-sm rounded;
         @apply focus:ring-color-primary-0 focus:border-color-primary-0 focus:ring-2;
         @apply flex justify-start items-center bg-color-secondary-1-1 mr-4;
@@ -178,7 +181,7 @@ export default{
         @apply lg:mr-6 xl:mr-8;
     }
     .products {
-        @apply flex flex-col items-center;
+        @apply flex flex-col items-center mxs:w-auto w-screen;
         @apply mxs:grid 2xl:grid-cols-4 sm:grid-cols-3 mxs:grid-cols-2;
         @apply 2xl:gap-14 xl:gap-20 lg:gap-14 xs:gap-10 mxs:gap-8 gap-4;
     }

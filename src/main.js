@@ -13,6 +13,10 @@ import "@/assets/styles/main.css";
 import vClickOutside from "click-outside-vue3";
 import moment from 'moment';
 
+//sweetalert2
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
 //Primevue
 import PrimeVue from 'primevue/config';
 import Slider from 'primevue/slider';
@@ -20,6 +24,7 @@ import Carousel from 'primevue/carousel';
 import Textarea from 'primevue/textarea';
 import Dialog from 'primevue/dialog';
 import ProgressBar from 'primevue/progressbar';
+import ColorPicker from 'primevue/colorpicker'
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.css';
@@ -27,15 +32,21 @@ import 'primeicons/primeicons.css';
 
 
 const httpLink = createHttpLink({
-    uri: 'https://ardco-api-gateway.herokuapp.com/',
+    // uri: 'https://ardco-api-gateway.herokuapp.com/',
+    uri: 'http://localhost:4000/',
 });
 
-const authLink = setContext((root, { headers }) => {
-    return {
-        headers: {
-            ...headers,
-            "Authorization": localStorage.getItem("token_access") || ""
-        }
+const authLink = setContext((_, {headers}) => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+        return {
+            headers: {
+                ...headers,
+                'Authorization': `Bearer ${token}`
+            }
+        };
+    } else {
+        return headers;
     }
 });
 
@@ -55,6 +66,7 @@ moment.locale('es');
 createApp(App)
 .use(vClickOutside)
 .use(PrimeVue)
+.use(VueSweetalert2)
 .use(router)
 .use(apolloProvider)
 .component('Slider', Slider)
@@ -62,4 +74,5 @@ createApp(App)
 .component('Textarea', Textarea)
 .component('Dialog', Dialog)
 .component('ProgressBar', ProgressBar)
+.component('ColorPicker', ColorPicker)
 .mount('#app')
