@@ -10,8 +10,11 @@
                     <p class=" text-7xl">{{average_reviews}}</p>
                     <div>
                         <div class="text-xl flex gap-1 text-yellow-400">     
-                            <span v-for="(star,index) in average_reviews" :key="index">
+                            <span v-for="(star,index) in integerStars" :key="index">
                                 <i class="fas fa-star"></i>
+                            </span>
+                            <span v-if="decimalStar > 0">
+                                <i class="fas fa-star-half"></i>
                             </span>
                         </div>
                     </div>
@@ -43,7 +46,7 @@
                             <i class="fas fa-star"></i>
                         </span>
                     </div>
-                    <p>{{review.text}}<span class="ml-6 text-sm font-light text-gray-400">{{review.date}}</span></p>
+                    <p>{{review.text}}<span class="ml-6 text-sm font-light text-gray-400">{{moment(review.date, "YYYYMMDD").fromNow()}}</span></p>
                 </div>
             </div>
         </div>       
@@ -89,36 +92,15 @@ export default {
             decimalStar:0,
         }
     },
-    apollo: {
-        reviewsByPublication: {
-            query: gql`
-                query ($publicationId: String!) {
-                    reviewsByPublication(publicationId: $publicationId) {
-                        _id
-                        date
-                        userId
-                        stars
-                        text
-                    }
-                }
-            `,
-            variables(){
-                return {
-                    publicationId: this.publicationId,
-                };
-            }
-        },
-    },
     methods: {    
         setReviewsRating: function(){
+            this.positiveReviews = [];
+            this.negativeReviews = [];
             for(let review of this.reviewsByPublication){
-
-                const numb = (1/review.length)*100;
-                const value = Math.round((numb + Number.EPSILON) * 100) / 100;;
+                const numb = (1/this.reviewsByPublication.length)*100;
+                const value = Math.round((numb + Number.EPSILON) * 100) / 100;
                 this.reviewsRating[review.stars][0] += value;
                 this.reviewsRating[review.stars][1] += 1;
-
-                review.date = moment(review.date,"YYYYMMDD").fromNow();
                 if(review.stars >= 3)
                     this.positiveReviews.push(review);
                 else
@@ -148,17 +130,44 @@ export default {
 
         },
         setStars: function() {
-            const stars = this.product.average_reviews;
+            const stars = this.average_reviews;
             if(stars%1 > 0){
                 this.decimalStar = 1;
                 this.integerStars = Math.floor(stars);
             }
             else
                 this.integerStars = Math.round(stars);
+        },
+        getData: function() {
+            this.$apollo.query({
+                query: gql`
+                    query ($publicationId: String!) {
+                        reviewsByPublication(publicationId: $publicationId) {
+                            _id
+                            date
+                            userId
+                            stars
+                            text
+                        }
+                    }
+                `,
+                variables: {
+                    publicationId: this.publicationId,
+                }
+            })
+            .then( response => {
+                this.reviewsByPublication = response.data.reviewsByPublication;
+                this.setReviewsRating();
+                this.setStars();
+            })
+            .catch(e => {
+                console.log(JSON.stringify(e, null, 2));
+            });
         }
     },
     watch:{
        seeAllReviews: function(newVal, oldVal){
+            this.getData();
            if( newVal == false && oldVal== true){
                this.$emit('closedReviewModal');
            }
@@ -166,10 +175,12 @@ export default {
     },
     created: function(){
         this.moment = moment;
+        this.getData();
+        
     },
-    mounted() {
-        this.setReviewsRating();
-    },
+    
+
+    
 }
 </script>
 

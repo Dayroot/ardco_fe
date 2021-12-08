@@ -2,10 +2,11 @@
 
     <div class="marginsX-1 pt-5">
         <product-section
-            :products="productsByCategory"
+            :products="products"
         >
         </product-section>
     </div>
+
 
 
 </template>
@@ -27,12 +28,11 @@ export default{
     },
     data: function(){
         return {
-            productsByCategory:[],
-            products:[],
+            products:[], 
         } 
-    },
-    apollo: {
-        productsByCategory: {
+    }, 
+    created: async function() {
+        this.$apollo.query({
             query: gql`
                 query ($categoryId: String!) {
                     productsByCategory(categoryId: $categoryId) {
@@ -57,18 +57,17 @@ export default{
                     }
                 }
             `,
-            variables(){
-                return {
-                    categoryId: this.categoryId,
-                };
+            variables: {
+                categoryId: this.categoryId,            
             }
-        },
+        })
+        .then( response => {
+            this.products = response.data.productsByCategory;
+        })
+        .catch(e => {
+            console.log(JSON.stringify(e, null, 2));
+        });
     },
-    
-    created: function() {
-        this.$apollo.queries.productsByCategory.refetch();
-    },
-
     
 }
 </script>

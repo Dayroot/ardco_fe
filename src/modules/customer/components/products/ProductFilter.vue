@@ -170,7 +170,11 @@ export default{
     watch: {
         openModalWindow: function(){
             this.openOrCloseModal();
+        },
+        products: function(){
+            this.setFilterFields();
         }
+
     },
     mounted() {
         this.setFilterFields();

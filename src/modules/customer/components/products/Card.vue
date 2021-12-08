@@ -42,7 +42,6 @@
 
                 </div>
                 
-                
                 <!-- <p class="text-sm text-gray-400 font-roboto line-through">$55789</p>  -->
             </div>
 
@@ -50,6 +49,9 @@
                 <div class="review__stars">     
                     <span v-for="(star,index) in integerStars" :key="index">
                         <i class="fas fa-star"></i>
+                    </span>
+                    <span v-if="decimalStar > 0">
+                        <i class="fas fa-star-half"></i>
                     </span>
                 </div>
 
