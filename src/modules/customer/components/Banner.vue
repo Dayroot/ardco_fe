@@ -10,7 +10,7 @@
             </p>
         </div>
         <div>
-            <img class="banner__img" :src="imgUrl" alt="">
+            <img class="banner__img" src="../../../assets/images/picture-1.jpg" alt="">
         </div>
     </div>
     <!-- banner end -->
@@ -25,7 +25,7 @@ export default {
     }
 }
 </script>
-<style lang="css">
+<style lang="css" scoped>
 
 .banner{
     @apply w-screen h-116 bg-blue-300 overflow-hidden relative flex items-center;

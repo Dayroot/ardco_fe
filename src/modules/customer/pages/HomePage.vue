@@ -4,7 +4,6 @@
         :value="bannerImgs" 
         :numVisible="1" 
         :numScroll="1" 
-        :responsiveOptions="responsiveOptions" 
         :circular="true" 
         :autoplayInterval="3000"
     >         
@@ -29,3 +28,12 @@ export default {
     },
 }
 </script>
+
+<style lang="css" scoped>
+    .p-carousel {
+        @apply w-screen
+    }
+    .p-carousel-items-content{
+        @apply w-screen
+    }
+</style>
