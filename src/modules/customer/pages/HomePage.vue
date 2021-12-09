@@ -46,6 +46,40 @@ export default {
         return {
             imgs: [ "https://media.fashionnetwork.com/m/0bcb/9013/b531/26bd/25e3/865f/f137/143e/35b6/1f76/1f76.jpg"],
             products:[],
+            responsiveOptions: [
+            {
+				breakpoint: '1280px',
+				numVisible: 4,
+				numScroll: 1
+			},
+            {
+				breakpoint: '1024px',
+				numVisible: 3,
+				numScroll: 1
+			},
+            {
+				breakpoint: '768px',
+				numVisible: 2,
+				numScroll: 1
+			},
+			{
+				breakpoint: '640px',
+				numVisible: 2,
+				numScroll: 1
+			},
+			{
+				breakpoint: '480px',
+				numVisible: 1,
+				numScroll: 1
+			},
+        
+            {
+				breakpoint: '320px',
+				numVisible: 1,
+				numScroll: 1
+			},
+
+		    ],
         }
     },
 
@@ -69,7 +103,7 @@ export default {
                 }
             })
             .then( response => {
-                this.products = response.data.listProducts;
+                this.products = response.data.listProducts.slice(-4,);
             })
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
