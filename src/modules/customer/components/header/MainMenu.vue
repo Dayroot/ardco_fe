@@ -33,9 +33,13 @@
                 <!--<span>Con&oacute;cenos</span>-->
             </router-link>
         </nav>
-        <div class="expandable" v-if="activateExpendable">
+        <div class="expandable" v-if="true">
             <div class="category">
-                
+                <img class="h-full object-cover rounded" src="../../../../assets/images/picture-1.jpg" alt="">
+                <div class="category__back-drop">
+                    <p class="category__title">instrumentos</p>
+                    <p class="category__sub-title">ver ahora</p>
+                </div>
             </div>
         </div>
     </div>
@@ -104,12 +108,24 @@ export default {
 }
 
 .expandable{
-    @apply bg-color-secondary-1-1 hidden md:flex items-center justify-center;
-    @apply w-screen h-96 absolute top-25 z-10;
+    @apply bg-color-secondary-1-1 hidden md:flex justify-center items-center;
+    @apply w-screen h-96 absolute top-25 z-10 gap-12;
 }
 
 .category{
-
+    @apply bg-red-300 w-52 h-72 flex justify-center shadow-lg rounded relative;
 }
 
+.category__back-drop {
+    @apply hover:bg-black hover:bg-opacity-40 w-full h-full absolute;
+    @apply flex items-end justify-center;
+}
+
+.category__title{
+    @apply w-80% h-8 bg-color-primary-0 rounded mb-4 text-lg uppercase text-center;
+}
+
+.category__sub-title{
+    
+}
 </style>
