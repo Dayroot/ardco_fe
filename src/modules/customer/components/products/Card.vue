@@ -13,13 +13,12 @@
                 >
                     <i class="fas fa-search"></i>
                 </router-link>
-                <router-link 
-                    to="" 
+                <div 
                     class="back-drop__icon"
                     @click="setLike" 
                 >
                     <i :class="{'far fa-heart': !like, 'fas fa-heart': like}"></i>
-                </router-link>
+                </div>
             </div>
             <!-- image back drop end -->
         </figure>

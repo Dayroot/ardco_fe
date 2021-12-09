@@ -1,8 +1,7 @@
 <template>
-    <div class="marginsX-2 publication-container">
+    <div class="marginsX-2 publication-container" v-if="publicationbyProductId">
         <!-- product view -->
-        <section class="product">
-          
+        <section class="product">       
             <div class="buttons-update">
                 <button  class="button-save" @click="updatePublication" v-if="activateEdit">
                     <span>GUARDAR</span>
@@ -230,15 +229,20 @@
             :seeAllQuestions="seeAllQuestions"
             :questions="questionsByPublication"
             @closedQuestionModal="setSeeAllQuestions"
-        ></questions-modal>
-        
+        ></questions-modal>      
     </div>
+    <loading 
+        v-model:active="isLoading"
+        :can-cancel="true"
+        :is-full-page="fullPage"
+    />
 </template>
 
 <script>
 import gql from "graphql-tag";
 import { defineAsyncComponent } from 'vue';
 import moment from 'moment';
+import Loading from 'vue-loading-overlay';
 
 export default {
     props: {
@@ -258,91 +262,40 @@ export default {
     data() {
         return {
             responsiveOptions: [
-            {
-				breakpoint: '1280px',
-				numVisible: 4,
-				numScroll: 1
-			},
-            {
-				breakpoint: '1024px',
-				numVisible: 3,
-				numScroll: 1
-			},
-            {
-				breakpoint: '768px',
-				numVisible: 5,
-				numScroll: 1
-			},
-			{
-				breakpoint: '640px',
-				numVisible: 4,
-				numScroll: 1
-			},
-			{
-				breakpoint: '480px',
-				numVisible: 3,
-				numScroll: 1
-			},
-        
-            {
-				breakpoint: '320px',
-				numVisible: 2,
-				numScroll: 1
-			},
-
+                {
+                    breakpoint: '1280px',
+                    numVisible: 4,
+                    numScroll: 1
+                },
+                {
+                    breakpoint: '1024px',
+                    numVisible: 3,
+                    numScroll: 1
+                },
+                {
+                    breakpoint: '768px',
+                    numVisible: 5,
+                    numScroll: 1
+                },
+                {
+                    breakpoint: '640px',
+                    numVisible: 4,
+                    numScroll: 1
+                },
+                {
+                    breakpoint: '480px',
+                    numVisible: 3,
+                    numScroll: 1
+                },
+            
+                {
+                    breakpoint: '320px',
+                    numVisible: 2,
+                    numScroll: 1
+                },
 		    ],
-            publicationbyProductId:{
-                _id: "",
-                product: {
-                    _id:"",
-                    name:"", 
-                    price: 0,
-                    stock: 0, 
-                    sold: 0,
-                    category: {
-                        _id:"",
-                        name:""
-                    }, 
-                    features: {
-                        color:"",
-                        material:"",
-                        department:""
-                    },
-                    imgUrls: [], 
-                    average_reviews: 0,
-                    total_reviews: 0,
-                    discount: 0
-                },
-                userId: 0,
-                publication_date: "",
-                description: ""
-            },
-            uneditePublication:{
-                _id: "",
-                product: {
-                    _id:"",
-                    name:"", 
-                    price: 0,
-                    stock: 0, 
-                    sold: 0,
-                    category: {
-                        _id:"",
-                        name:"",
-                    }, 
-                    features: {
-                            color:"",
-                            material:"",
-                            department:"",
-                    },
-                    imgUrls: [], 
-                    average_reviews: 0,
-                    total_reviews: 0,
-                    discount: 0,
-                },
-                userId: 0,
-                publication_date: "",
-                description: ""
-            },
+            publicationbyProductId: null,
+            uneditePublication: null,
             questionsByPublication:[],
             like: false,
             quantity: 0,
@@ -352,10 +305,14 @@ export default {
             integerStars:0,
             decimalStar:0,
             activateEdit: false,
+            isLoading: false,
+            fullPage: true,
         }
     },
     methods: {
         setActivateEdit: function(){
+            if(this.activateEdit)
+                this.publicationbyProductId = this.uneditePublication;
             this.activateEdit = !this.activateEdit;
         },
         setLike: function() {
@@ -391,9 +348,7 @@ export default {
         },
         updatePublication: async function(){
             console.log(this.publicationbyProductId);
-            console.log("tokennnnnnnnnnnnn");
-            console.log(localStorage.getItem('access_token'));
-    
+            this.isLoading = true;
             await this.$apollo.mutate({
                 mutation: gql`
                     mutation($updatePublicationInput: UpdatePublicationInput!) {
@@ -453,91 +408,121 @@ export default {
             .then(response => {
                 //Swal.close();
                 alert('ok');
-                console.log("response");
-                console.log(response.data.updatePublication);
-                this.publicationbyProductId = response.data.updatePublication;                  
+                this.publicationbyProductId = response.data.updatePublication; 
+                this.uneditePublication = response.data.updatePublication;  
                 
             }).catch(e => {
                 //Swal.close();
                 alert('no');
                 console.log(JSON.stringify(e, null, 2));
             });
+            this.isLoading = false;
+        },
+        getPublication: async function(){
+            await this.$apollo.query({
+                query: gql`
+                    query ($productId: String!) {
+                        publicationbyProductId(productId: $productId) {
+                            _id
+                            product {
+                                _id
+                                name
+                                price
+                                stock 
+                                sold
+                                category {
+                                    _id
+                                    name
+                                }
+                                features {
+                                    color
+                                    material
+                                    department
+                                }
+                                imgUrls 
+                                average_reviews
+                                total_reviews
+                                discount
+                            }
+                            userId
+                            publication_date
+                            description
+                        }
+                    }
+                `,
+                variables: {
+                    productId: this.productId,            
+                }
+            })
+            .then( response => {
+                // this.publicationbyProductId = response.data.publicationbyProductId;
+                this.publicationbyProductId = {
+                     _id: response.data.publicationbyProductId._id,
+                    product: {
+                        _id: response.data.publicationbyProductId.product._id,
+                        name: response.data.publicationbyProductId.product.name,
+                        price: Number(response.data.publicationbyProductId.product.price),
+                        stock: Number(response.data.publicationbyProductId.product.stock),
+                        category: {
+                            _id: response.data.publicationbyProductId.product.category._id,
+                            name: response.data.publicationbyProductId.product.category.name,
+                        },
+                        features: {
+                            color: response.data.publicationbyProductId.product.features.color,
+                            material: response.data.publicationbyProductId.product.features.material,
+                            department: response.data.publicationbyProductId.product.features.department,
+                        },
+                        imgUrls: response.data.publicationbyProductId.product.imgUrls,
+                        discount: response.data.publicationbyProductId.product.discount,
+                        average_reviews: response.data.publicationbyProductId.product.average_reviews,
+                        total_reviews: response.data.publicationbyProductId.product.total_reviews
+                    },
+                    userId: Number(response.data.publicationbyProductId.userId),
+                    description: response.data.publicationbyProductId.description
+                };
+                this.uneditePublication = {...this.publicationbyProductId};
+                this.setMainImg();
+                this.setStars();
+            })
+            .catch(e => {
+                console.log(JSON.stringify(e, null, 2));
+            });
+        },
+        getQuestions: async function(){
+            await this.$apollo.query({
+                query: gql`
+                    query ($publicationId: String!) {
+                        questionsByPublication(publicationId: $publicationId) {
+                            _id
+                            date
+                            text
+                            answer {
+                                _id
+                                date
+                                text
+                            } 
+                        }
+                    }
+                `,
+                variables: {
+                    publicationId: this.productId,            
+                }
+            })
+            .then( response => {
+                this.questionsByPublication = response.data.questionsByPublication;
+            })
+            .catch(e => {
+            console.log(JSON.stringify(e, null, 2));
+            });
         }
 
     },
     created: function(){
         this.moment = moment;
-
-        this.$apollo.query({
-            query: gql`
-                query ($productId: String!) {
-                    publicationbyProductId(productId: $productId) {
-                        _id
-                        product {
-                            _id
-                            name
-                            price
-                            stock 
-                            sold
-                            category {
-                                _id
-                                name
-                            }
-                            features {
-                                color
-                                material
-                                department
-                            }
-                            imgUrls 
-                            average_reviews
-                            total_reviews
-                            discount
-                        }
-                        userId
-                        publication_date
-                        description
-                    }
-                }
-            `,
-            variables: {
-                productId: this.productId,            
-            }
-        })
-        .then( response => {
-            this.publicationbyProductId = response.data.publicationbyProductId;
-            this.uneditePublication = response.data.publicationbyProductId;
-            this.setMainImg();
-            this.setStars();
-        })
-        .catch(e => {
-            console.log(JSON.stringify(e, null, 2));
-        });
-
-        this.$apollo.query({
-            query: gql`
-                query ($publicationId: String!) {
-                    questionsByPublication(publicationId: $publicationId) {
-                         _id
-                        date
-                        text
-                        answer {
-                            _id
-                            date
-                            text
-                        } 
-                    }
-                }
-            `,
-            variables: {
-                publicationId: this.productId,            
-            }
-        })
-        .then( response => {
-            this.questionsByPublication = response.data.questionsByPublication;
-        })
-        .catch(e => {
-           console.log(JSON.stringify(e, null, 2));
-        });
+        this.isLoading = true;
+        this.getPublication();
+        this.getQuestions(); 
+        this.isLoading = false; 
     },
 
 }

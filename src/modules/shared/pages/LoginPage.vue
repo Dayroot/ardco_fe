@@ -1,6 +1,10 @@
 <!-- form wrapper -->
 
-<template>   
+<template> 
+    <loading v-model:active="isLoading"
+                :can-cancel="true"
+                :is-full-page="fullPage"
+    />
     <div class="container pt-12">
         <div class="max-w-lg mx-auto shadow px-6 py-7 rounded overflow-hidden">
             <h2 class="text-2xl uppercase font-medium mb-6">
@@ -38,6 +42,8 @@
 
 <script>
 import gql from "graphql-tag";
+import Loading from 'vue-loading-overlay';
+
 export default {
     emits:["completedLogIn"],
     data: function() {
@@ -47,6 +53,8 @@ export default {
                 password: "",
             },
             credentialError: false,
+            isLoading: false,
+            fullPage: true,
         }
     },
     methods: {
@@ -54,8 +62,7 @@ export default {
             this.credentialError = !this.credentialError;
         },
         processLogIn: async function() { 
-            console.log("aqui");
-            console.log(this.user);
+            this.isLoading = true;
             await this.$apollo
                 .mutate({
                     mutation: gql`
@@ -77,16 +84,17 @@ export default {
                         fullname: result.data.logIn.fullname,
                         token_refresh: result.data.logIn.refresh,
                     }
-
+                    this.isLoading = false;
                     this.$emit("completedLogIn", dataLogIn);
                 })
                 .catch((error) => {
+                    this.isLoading = false;
                     this.setCredentialError();
                 });
         }
     },
     created() {
-        //localStorage.clear();
+        localStorage.clear();
     }
 
 }

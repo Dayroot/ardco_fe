@@ -142,6 +142,7 @@ module.exports = {
 			borderWidth: ['hover', 'focus'],
 			borderColor: ['hover','active'],
 			outline: ['hover'],
+			scale: ['active'],
 		},
 	},
 	plugins: [],

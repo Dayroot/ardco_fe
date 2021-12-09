@@ -16,12 +16,12 @@ const routes = [
 		component: () => import(/* webpackChunkName: "customerLayout" */'../modules/customer/layouts/CustomerLayout'),
 		children: [	
 			{
-				path: 'categorias',
+				path: 'categoria',
 				name: 'categories',
 				component: () => import(/* webpackChunkName: "categoriesLayout" */'../modules/customer/layouts/CategoriesLayout'),
 				children: [
 					{
-						path: 'productos',
+						path: '',
 						name: 'productsLayout',
 						meta: {title: 'Productos'},
 						component:  () => import(/* webpackChunkName: "productsLayout" */'../modules/customer/layouts/ProductsLayout'),
@@ -41,7 +41,7 @@ const routes = [
 								}
 							},
 							{
-								path: '',
+								path: ':categoryName',
 								name: 'products',
 								meta: {title: 'Productos', requiresAuth: false},
 								component:  () => import(/* webpackChunkName: "productsPage" */'../modules/customer/pages/ProductsPage'),
@@ -85,17 +85,15 @@ const router = createRouter({
 
 router.beforeEach( async(to, from, next) => {
     document.title = to.meta.title
-	console.log(localStorage.getItem("token_access"));
-	next()
-    // var is_auth = await isAuthenticatedUser();
+    var is_auth = await isAuthenticatedUser();
 
-	// if( is_auth == to.meta.requiresAuth || !is_auth == !to.meta.requiresAuth) 
-	// 	next()
+	if( is_auth == to.meta.requiresAuth || is_auth && !to.meta.requiresAuth) 
+		next()
 
-	// if( !is_auth && to.meta.requiresAuth){
-	// 	alert("Su sesión expiró, por favor vuelva a iniciar sesión");
-	// 	nex({name: 'login'})
-	// }
+	if( !is_auth && to.meta.requiresAuth){
+		alert("Su sesión expiró, por favor vuelva a iniciar sesión");
+		nex({name: 'login'})
+	}
 })
 
 
