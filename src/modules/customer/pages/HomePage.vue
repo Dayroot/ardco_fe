@@ -13,7 +13,7 @@
                     :imgUrl="image.data"
                 ></banner>     
         </template>
-    </Galleria>
+    </Galleria> 
 </template>
 <script>
 import { defineAsyncComponent } from 'vue';
