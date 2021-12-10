@@ -8,11 +8,12 @@ const apolloClient = new ApolloClient({
 })
 
 const isOwnsPublication = async( route ) => {
-    if ( localStorage.getItem("token_access") ){
-        const token = localStorage.getItem("token_access");
-        const userId = jwt_decode(token).user_id;
 
-        await this.$apollo.query({
+    const token = localStorage.getItem("token_access");
+
+    if ( token ){
+        const userId = jwt_decode(token).user_id;
+        await apolloClient.query({
             query: gql`
                 query ($productId: String!) {
                     productById(productId: $productId) {
@@ -27,7 +28,6 @@ const isOwnsPublication = async( route ) => {
         .then( response => {
             const ownerId = response.data.productById.userId;
             if( ownerId == userId ){
-                alert("true");
                 return true;
             }
             else 
@@ -37,8 +37,9 @@ const isOwnsPublication = async( route ) => {
             console.log(JSON.stringify(e, null, 2));
         });
     }
-    else
+    else{
         return false;
+    }
 };
 
 export default isOwnsPublication;

@@ -1,6 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import isOwnsPublication from './guards/verifyPublicationOwner';
-import isAuthenticatedUser from './guards/verifyUserAuth'
+import isAuthenticatedUser from './guards/verifyUserAuth';
+import Swal from 'sweetalert2';
+
 
 const routes = [
 
@@ -31,14 +33,7 @@ const routes = [
 								name: 'productDetailPage',
 								meta: {title: 'Detalles de producto', requiresAuth: false},
 								component:  () => import(/* webpackChunkName: "ProductDetailPage" */'../modules/customer/pages/ProductDetailPage'),
-								props: ( route ) => {
-	
-									if( isOwnsPublication(route) ){
-										return {...route.params, editOption: true}
-									}
-		
-									return { ...route.params};
-								}
+								props: true,
 							},
 							{
 								path: ':categoryName',
@@ -58,7 +53,8 @@ const routes = [
 				path: '',
 				name: 'home',
 				meta: {title: 'Ardco', requiresAuth: false},
-				component:  () => import(/* webpackChunkName: "homepage" */'../modules/customer/pages/HomePage')
+				component:  () => import(/* webpackChunkName: "homepage" */'../modules/customer/pages/HomePage'),
+				props: true
 			},
 			{
 				path: 'registrarse',
@@ -70,8 +66,14 @@ const routes = [
 				path: 'iniciar-sesion',
 				name: 'login',
 				meta: {title: 'Iniciar sesión', requiresAuth: false},
-				component:  () => import(/* webpackChunkName: "loginPage" */'../modules/shared/pages/LoginPage')
-
+				component:  () => import(/* webpackChunkName: "loginPage" */'../modules/shared/pages/LoginPage'),
+				props: true
+			},
+			{
+				path: 'cuenta',
+				name: 'account',
+				meta: {title: 'Cuenta', requiresAuth: true},
+				component:  () => import(/* webpackChunkName: "accountPage" */'../modules/customer/pages/AccountDataPage'),
 			}
 		]
 	},
@@ -91,8 +93,15 @@ router.beforeEach( async(to, from, next) => {
 		next()
 
 	if( !is_auth && to.meta.requiresAuth){
-		alert("Su sesión expiró, por favor vuelva a iniciar sesión");
-		nex({name: 'login'})
+		Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Su sesión expiró, por favor vuelva a iniciar sesión',
+            showConfirmButton: false,
+            timer: 3000
+        });
+		nex({name: 'login', params:{ logOut: true }})
 	}
 })
 

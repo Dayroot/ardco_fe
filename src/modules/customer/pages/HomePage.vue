@@ -40,11 +40,20 @@
 import { defineAsyncComponent } from 'vue';
 import gql from "graphql-tag";
 import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
+    emits: ['completedLogOut'],
+    props: {
+        logOut: {
+            type: Boolean,
+            default: false
+        },
+    },
     components:{
         Banner: defineAsyncComponent(() => import( /* webpackChunkName: "banner" */ '../components/Banner')),
         Card: defineAsyncComponent(() => import( /* webpackChunkName: "card" */ '../components/products/Card')),
+        Loading
     },
     data() {
         return {
@@ -62,35 +71,23 @@ export default {
                     numScroll: 1
                 },
                 {
-                    breakpoint: '768px',
-                    numVisible: 2,
-                    numScroll: 1
-                },
-                {
                     breakpoint: '640px',
                     numVisible: 2,
                     numScroll: 1
-                },
-                {
-                    breakpoint: '480px',
-                    numVisible: 1,
-                    numScroll: 1
-                },
-            
+                },   
                 {
                     breakpoint: '320px',
                     numVisible: 1,
                     numScroll: 1
                 },
 		    ],
-            isLoading: false,
+            isLoading: true,
             fullPage: true,
         }
     },
 
     methods: {
         getProducts: async function(){
-            this.isLoading = true;
             await this.$apollo.query({
                 query: gql`
                     query {
@@ -114,11 +111,16 @@ export default {
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
             });
-            this.isLoading = false;
         }
     },
     created: function(){
         this.getProducts();
+        this.isLoading = false;
+    },
+    watch: {
+        logOut: function(){
+            this.$emit('completedLogOut');
+        }
     }
 }
 </script>

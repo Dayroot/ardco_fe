@@ -1,0 +1,21 @@
+.quantity-selector__title {
+    @apply text-base text-gray-800 mb-1 flex gap-4 items-center;
+}
+
+.quantity-selector__title span {
+    @apply  text-gray-600 text-xs;
+}
+
+.quantity-selector__content {
+    @apply flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max;
+}
+
+.quantity-selector__button {
+    @apply h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none;
+    @apply hover:text-color-primary-0 transition-all;
+}
+
+.quantity-selector__value {
+    @apply h-8 px-2 flex items-center justify-center;
+    min-width: 40px;
+}

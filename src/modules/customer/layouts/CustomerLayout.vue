@@ -3,6 +3,7 @@
     <router-view
         @completedLogIn="completedLogIn"
         @completedSignUp="completedSignUp"
+        @completedLogOut="authUser = false"
     />
     <Footer/>
 </template>
@@ -22,21 +23,18 @@ export default {
     },
     methods:{
         completedLogIn: function(data) {
+            localStorage.setItem("authUser", true)
             localStorage.setItem("username", data.username);
             localStorage.setItem("fullname", data.fullname);
             localStorage.setItem("token_access", data.token_access);
             localStorage.setItem("token_refresh", data.token_refresh);
             this.authUser = true;
-            this.$router.push({ path: "/" });
+            this.$router.push({ name: "home" });
         },
         completedSignUp: function(data) {
-            alert("Registro Exitoso");
             this.completedLogIn(data);
         },
     },
-    mounted() {
-        if(localStorage.getItem("token_access"))
-            this.authUser = true;
-    },
+    
 }
 </script>

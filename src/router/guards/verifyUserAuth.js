@@ -1,6 +1,7 @@
 import jwt_decode from "jwt-decode";
 import gql from "graphql-tag";
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core';
+import Swal from 'sweetalert2';
 
 const apolloClient = new ApolloClient({
     link: createHttpLink({ uri: 'https://ardco-api-gateway.herokuapp.com/' }),
@@ -32,8 +33,15 @@ const isAuthenticatedUser = async() => {
         return true;
     } catch (error) {
         localStorage.clear();
-        alert("Su sesión expiró, por favor vuelva a iniciar sesión");
-        nex({name: 'login'})
+        Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Su sesión expiró, por favor vuelva a iniciar sesión',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        nex({name: 'login', params:{ logOut: true }})
     }
 };
 

@@ -19,7 +19,7 @@
                 </div>
         
                 <!-- bell icon -->
-                <div class="icon-1 block" v-if="authUser">
+                <div class="icon-1 block" v-if="auth">
                     <span class="counter">3</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon-1-img" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -33,12 +33,17 @@
                     </svg>
                 </div>
                 <!-- shopping cart icon-->
-                <div class="icon-1">
+                <div class="icon-1" @click="setOpenCart">
                     <span class="counter">15</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon-1-img" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                 </div>
+                <Sidebar v-model:visible="openCart" position="right">
+                    <shopping-cart
+                        
+                    ></shopping-cart>
+                </Sidebar>
                 <!--user icon -->
                 <div class="relative" @mouseleave="activateUserModal=false">
                     <div class="icon-1 hidden md:block" @mouseenter="activateUserModal=true">
@@ -46,26 +51,10 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                     </div>
-                    <div class="user-modal" v-if="activateUserModal" @mouseleave="activateUserModal=false">
-                            <div class="user-modal__header">
-                                <div class="text-5xl">
-                                    <i class="fas fa-user-circle"></i>
-                                </div>
-                                <p>Hola {{firstname}}</p>
-
-                            </div>
-                            <div class="user-modal__field-wrapper">
-                                <p class="user-modal__field">iniciar sesión</p>
-                            </div>
-                            <div class="user-modal__field-wrapper">
-                                <p class="user-modal__field">registrarse</p>
-                            </div>
-                            <div class="user-modal__field-wrapper">
-                                <p class="user-modal__field">mi cuenta</p>
-                            </div>
-                            <div class="user-modal__field-wrapper">
-                                <p class="user-modal__field">cerrar sesión</p>
-                            </div>
+                    <div v-if="activateUserModal" @mouseleave="activateUserModal=false">
+                           <user-modal
+                                :auth="auth"
+                           ></user-modal>
                     </div>
                 </div>
                 <!-- menu icon-->
@@ -107,6 +96,8 @@ export default {
     components:{
         MainMenu: defineAsyncComponent(() => import( /* webpackChunkName: "mainMenu" */ './MainMenu')),
         SearchBar: defineAsyncComponent(() => import( /* webpackChunkName: "searchBar" */ './SearchBar')),
+        UserModal: defineAsyncComponent(() => import( /* webpackChunkName: "userModal" */ '../modals/UserModal')),
+        ShoppingCart: defineAsyncComponent(() => import( /* webpackChunkName: "shoppingCart" */ '../ShoppingCart')),
     },
     data() {
         return {
@@ -114,9 +105,14 @@ export default {
            activateSearchBar:false,
            activateUserModal: false,
            firstname:"usuario",
+           auth: false,
+           openCart: false,
         }
     },
     methods:{
+        setOpenCart: function(){
+            this.openCart = !this.openCart;
+        },
         setActivateMobileMenu: function(){
             this.activateMobileMenu = !this.activateMobileMenu;
         },
@@ -124,19 +120,22 @@ export default {
             this.activateSearchBar = !this.activateSearchBar;
         },
         setFirstName: function(){
-            if(this.authUser){
-                const fullname = localStorage.getItem('fullname');
-                if(fullname)
-                    this.firstname = fullname.split(' ')[0]; 
+            
+            if(this.auth){
+                const fullname = localStorage.getItem("fullname") || "Usuario";
+                this.firstname = fullname.split(" ")[0]; 
             }
         },
     },
     watch:{
         authUser: function(){
+            this.auth = this.authUser;
             this.setFirstName();
         }
     },
     mounted: function(){
+        if(localStorage.getItem("token_access"))
+            this.auth = true;
         this.setFirstName();
     }
 }
@@ -174,21 +173,4 @@ export default {
     @apply absolute -right-1.5 -top-0.5;
 }
 
-.user-modal {
-    @apply absolute flex flex-col bg-color-secondary-1-1 rounded-sm;
-    @apply top-9 right-0 w-72;
-}
-.user-modal__field {
-    @apply px-6 py-2 cursor-pointer hover:text-color-secondary-2-0 transition;
-    @apply capitalize text-gray-400 rounded-sm;
-    @apply active:scale-95 transform;
-}
-
-.user-modal__field-wrapper{
-    @apply hover:bg-color-primary-2 rounded-sm hover:bg-opacity-60 transition;
-}
-.user-modal__header {
-    @apply flex gap-3 items-center text-color-secondary-2-0 text-lg;
-    @apply px-6 py-2 capitalize cursor-pointer;
-}
 </style>

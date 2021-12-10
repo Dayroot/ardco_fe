@@ -43,9 +43,16 @@
 <script>
 import gql from "graphql-tag";
 import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
-    emits:["completedLogIn"],
+    emits:["completedLogIn",'completedLogOut'],
+    props: {
+        logOut: {
+            type: Boolean,
+            default: false
+        },
+    },
     data: function() {
         return {
             user: {
@@ -57,6 +64,7 @@ export default {
             fullPage: true,
         }
     },
+    components: { Loading },
     methods: {
         setCredentialError: function(){
             this.credentialError = !this.credentialError;
@@ -70,6 +78,7 @@ export default {
                             logIn(credentials: $credentials) {
                                 refresh
                                 access
+                                fullname
                             }
                         }
                     `,
@@ -84,17 +93,19 @@ export default {
                         fullname: result.data.logIn.fullname,
                         token_refresh: result.data.logIn.refresh,
                     }
-                    this.isLoading = false;
                     this.$emit("completedLogIn", dataLogIn);
                 })
                 .catch((error) => {
                     this.isLoading = false;
                     this.setCredentialError();
+                    console.log(JSON.stringify(e, null, 2));
                 });
         }
     },
-    created() {
-        localStorage.clear();
+    watch: {
+        logOut: function(){
+            this.$emit('completedLogOut');
+        }
     }
 
 }

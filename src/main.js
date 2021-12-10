@@ -7,11 +7,14 @@ import router from './router'
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
 import { createApolloProvider } from '@vue/apollo-option'
 import { setContext } from 'apollo-link-context'
+
 import "@/assets/styles/main.css";
 
 //External functions
 import vClickOutside from "click-outside-vue3";
 import moment from 'moment';
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 //sweetalert2
 import VueSweetalert2 from 'vue-sweetalert2';
@@ -25,7 +28,8 @@ import Carousel from 'primevue/carousel';
 import Textarea from 'primevue/textarea';
 import Dialog from 'primevue/dialog';
 import ProgressBar from 'primevue/progressbar';
-import ColorPicker from 'primevue/colorpicker'
+import ColorPicker from 'primevue/colorpicker';
+import Sidebar from 'primevue/sidebar';
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.css';
@@ -37,17 +41,12 @@ const httpLink = createHttpLink({
     uri: 'http://localhost:4000/',
 });
 
-const authLink = setContext((_, {headers}) => {
-    const token = localStorage.getItem('token_access');
-    if (token) {
-        return {
-            headers: {
-                ...headers,
-                'Authorization': `Bearer ${token}`
-            }
-        };
-    } else {
-        return headers;
+const authLink = setContext((_, { headers }) => {
+    return {
+        headers: {
+            ...headers,
+            "Authorization": localStorage.getItem("token_access") || ""
+        }
     }
 });
 
@@ -70,6 +69,7 @@ createApp(App)
 .use(VueSweetalert2)
 .use(router)
 .use(apolloProvider)
+.use(Loading)
 .component('Slider', Slider)
 .component('Carousel', Carousel)
 .component('Textarea', Textarea)
@@ -77,4 +77,5 @@ createApp(App)
 .component('ProgressBar', ProgressBar)
 .component('ColorPicker', ColorPicker)
 .component('Galleria', Galleria)
+.component('Sidebar', Sidebar)
 .mount('#app')

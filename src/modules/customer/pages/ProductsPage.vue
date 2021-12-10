@@ -15,6 +15,7 @@
 import gql from "graphql-tag";
 import { defineAsyncComponent } from 'vue';
 import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default{
     props : {
@@ -29,7 +30,7 @@ export default{
     },
     components:{
         ProductSection: defineAsyncComponent(() => import( /* webpackChunkName: "productSection" */ '../components/products/ProductSection')),
-
+        Loading,
     },
     data: function(){
         return {

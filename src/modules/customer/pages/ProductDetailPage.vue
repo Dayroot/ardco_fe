@@ -29,11 +29,12 @@
                     :autoplayInterval="3000"
                 >         
                     <template #item="image">
-                            <div 
-                                class=" mxs:h-24 mxs:w-24 h-16 w-16">
-                                <img :src="image.data" alt="" class="images__single images__single--thumbnail"
-                                @click="setMainImg(image.data)"
-                            >
+                            <div class=" mxs:h-24 mxs:w-24 h-16 w-16">
+                                <img 
+                                    :src="image.data" alt="" 
+                                    class="images__single images__single--thumbnail"
+                                    @click="setMainImg(image.data)"
+                                >
                             </div>      
                     </template>
                 </Carousel>
@@ -128,7 +129,7 @@
                 <!-- quantity -->
                 <div class="mt-4">
                     <div class="quantity-selector__title">
-                        <h3>Quantity</h3>
+                        <h3>Cantidad</h3>
                         <input
                             v-if="activateEdit"
                             type="number"
@@ -193,8 +194,9 @@
                         cols="100"
                         class="question-entry__input"
                         placeholder="Escribe tu pregunta..."
+                        v-model="questionAsked"
                     />
-                    <button class="button-1 button-1--v2">
+                    <button class="button-1 button-1--v2" @click="sendQuestion">
                         <span class="mr-2">PREGUNTAR</span>
                     </button>
                 </div>
@@ -212,8 +214,10 @@
                         </div>
                     </div>
                 </div>
-                <button 
-                class="questions__button-open" @click="setSeeAllQuestions">Ver todas las preguntas</button>
+                <button v-if="questionsByPublication.length>4" class="questions__button-open" @click="setSeeAllQuestions">Ver todas las preguntas</button>
+                <div v-if="!questionsByPublication.length">
+                    <p class="text-gray-400 ">Esta publicación aún no tiene preguntas, sé el primero!</p>
+                </div>
             </div>
         </section>
         <!-- questions and answers end-->
@@ -231,7 +235,7 @@
             @closedQuestionModal="setSeeAllQuestions"
         ></questions-modal>      
     </div>
-    <loading 
+    <Loading 
         v-model:active="isLoading"
         :can-cancel="true"
         :is-full-page="fullPage"
@@ -239,25 +243,29 @@
 </template>
 
 <script>
+import jwt_decode from "jwt-decode";
 import gql from "graphql-tag";
 import { defineAsyncComponent } from 'vue';
 import moment from 'moment';
 import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
+import Swal from 'sweetalert2';
 
 export default {
     props: {
         productId:{
             type: String,
-            required: true,
-        },
-        editOption:{
-            type: Boolean,
             default: false,
         },
+        // editOption:{
+        //     type: Boolean,
+        //     required: true
+        // },
     },
     components:{
         QuestionsModal: defineAsyncComponent(() => import( /* webpackChunkName: "questionsModal" */ '../components/modals/QuestionsModal')),
         ReviewsModal: defineAsyncComponent(() => import( /* webpackChunkName: "reviewsModal" */ '../components/modals/ReviewsModal')),
+        Loading,
     },
     data() {
         return {
@@ -305,11 +313,14 @@ export default {
             integerStars:0,
             decimalStar:0,
             activateEdit: false,
-            isLoading: false,
+            isLoading: true,
             fullPage: true,
+            questionAsked: "",
+            editOption: false,
         }
     },
     methods: {
+
         setActivateEdit: function(){
             if(this.activateEdit)
                 this.publicationbyProductId = this.uneditePublication;
@@ -347,7 +358,6 @@ export default {
             this.seeAllReviews = !this.seeAllReviews
         },
         updatePublication: async function(){
-            console.log(this.publicationbyProductId);
             this.isLoading = true;
             await this.$apollo.mutate({
                 mutation: gql`
@@ -406,14 +416,24 @@ export default {
                 },              
             })
             .then(response => {
-                //Swal.close();
-                alert('ok');
                 this.publicationbyProductId = response.data.updatePublication; 
                 this.uneditePublication = response.data.updatePublication;  
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    text: 'Los cambios han sido guardados!',
+                    showConfirmButton: false,
+                    timer: 2500
+                });
                 
             }).catch(e => {
-                //Swal.close();
-                alert('no');
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    text: 'Los cambios no han sido guardados!',
+                    showConfirmButton: false,
+                    timer: 2500
+                });
                 console.log(JSON.stringify(e, null, 2));
             });
             this.isLoading = false;
@@ -455,7 +475,7 @@ export default {
                 }
             })
             .then( response => {
-                // this.publicationbyProductId = response.data.publicationbyProductId;
+
                 this.publicationbyProductId = {
                      _id: response.data.publicationbyProductId._id,
                     product: {
@@ -505,7 +525,7 @@ export default {
                     }
                 `,
                 variables: {
-                    publicationId: this.productId,            
+                    publicationId: this.publicationbyProductId._id,            
                 }
             })
             .then( response => {
@@ -514,15 +534,105 @@ export default {
             .catch(e => {
             console.log(JSON.stringify(e, null, 2));
             });
-        }
+            this.isLoading = false;
+        },
+        verifyPublicationOwner: async function(){
+            const token = await localStorage.getItem("token_access");
+            if ( token ){
+                const userId = jwt_decode(token).user_id;
+                await this.$apollo.query({
+                    query: gql`
+                        query ($productId: String!) {
+                            productById(productId: $productId) {
+                            userId
+                            }
+                        }
+                    `,
+                    variables: {
+                        productId: this.productId,
+                    }
+                })
+                .then( response => {
+                    const ownerId = response.data.productById.userId;
+                    if( ownerId == userId )
+                        this.editOption = true;
+                    else 
+                        this.editOption = false;
+                })
+                .catch(e => {
+                    console.log(JSON.stringify(e, null, 2));
+                });
+            }
+        },
+        sendQuestion: async function(){
+            const token = await localStorage.getItem("token_access");
+            if(token){
+                this.isLoading = true;
+                const userId = jwt_decode(token).user_id;
+                await this.$apollo.mutate({
+                    mutation: gql`
+                        mutation($questionInput: QuestionInput!) {
+                            createQuestion(questionInput: $questionInput) {
+                                date
+                                text
+                                answer {
+                                    date
+                                    text
+                                }
+                            }
+                        }
+                    `,
+                    variables: {
+                        questionInput: {
+                            publication: this.publicationbyProductId._id,
+                            userId: userId,
+                            text: this.questionAsked,
+                            status: "por responder"
+                        }
+                    }
+                })
+                .then(response => {
+                    this.questionAsked = "";
+                    this.questionsByPublication = [...this.questionsByPublication, response.data.createQuestion]; 
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        text: 'El vendedor te respondera pronto!',
+                        showConfirmButton: false,
+                        timer: 2500
+                    });
+                
+                }).catch(e => {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Tu pregunta no ha sido guardada, vuelve a intentarlo nuevamente!',
+                        showConfirmButton: false,
+                        timer: 2500
+                    });
+                    console.log(JSON.stringify(e, null, 2));
+                });
+                this.isLoading = false;
+            }else {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Necesitas iniciar sesión para realizar una pregunta!',
+                    showConfirmButton: false,
+                    timer: 2500
+                });
+            }
+        },
 
     },
-    created: function(){
+    created: async function(){
         this.moment = moment;
-        this.isLoading = true;
-        this.getPublication();
-        this.getQuestions(); 
-        this.isLoading = false; 
+        await this.getPublication();
+        await this.getQuestions();
+        await this.verifyPublicationOwner();
+        console.log(this.editOption);
     },
 
 }
@@ -544,7 +654,7 @@ export default {
     }
     
     .images__single {
-        @apply w-full h-full object-cover cursor-pointer hover:border-color-primary-2 border border-gray-400;
+        @apply w-full h-full  object-cover cursor-pointer hover:border-color-primary-2 border border-gray-400;
         
     }
     
@@ -598,27 +708,6 @@ export default {
         @apply hover:outline-none hover:border-0;
     }
 
-    .quantity-selector__title {
-        @apply text-base text-gray-800 mb-1 flex gap-4 items-center;
-    }
-
-    .quantity-selector__title span {
-        @apply  text-gray-600 text-xs;
-    }
-    
-    .quantity-selector__content {
-        @apply flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max;
-    }
-
-    .quantity-selector__button {
-        @apply h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none;
-        @apply hover:text-color-primary-0 transition-all;
-    }
-
-    .quantity-selector__value {
-        @apply h-8 px-2 flex items-center justify-center;
-        min-width: 40px;
-    }
 
     .share-icons-wrapper {
         @apply flex space-x-3 mt-4;

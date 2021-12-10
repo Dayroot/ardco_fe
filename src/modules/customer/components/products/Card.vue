@@ -1,10 +1,9 @@
 <template>    
 
     <div class="card">
-
         <!-- card image -->
         <figure class="group card__img"> 
-            <img :src="product.imgUrls[0]" class="w-full">
+            <img :src="product.imgUrls[0]" class="w-full h-42 object-cover">
             <!-- image back drop -->
             <div class="back-drop">
                 <router-link 
@@ -61,7 +60,7 @@
         <!-- card content end -->
 
         <!-- card button -->
-        <button class="button-1 text-sm">
+        <button class="button-1 text-sm" @click="confirmAddToCart = true">
             <span class="mr-2">AGREGAR</span>
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -72,10 +71,17 @@
         <!-- card button end -->
     </div>
 
+        <ConfirmAddToCartModal
+            @closedConfirmAddToCard="confirmAddToCart = false"
+            :openConfirmAddToCard="confirmAddToCart"
+            :product="product"
+        />
+
+
 </template>
 
 <script>
-
+import { defineAsyncComponent } from 'vue';
 export default{
     props: {
         product: {
@@ -83,14 +89,19 @@ export default{
             required: true
         }
     },
+    components: {
+        ConfirmAddToCartModal: defineAsyncComponent(() => import( /* webpackChunkName: "confirmAddToCartModal" */ '../modals/ConfirmAddToCartModal')),
+    },
     data() {
         return {
             like:false,
             integerStars:0,
             decimalStar:0,
+            confirmAddToCart: false,
         }
     },
     methods: {
+    
         setLike: function() {
             this.like = !this.like;
         },
@@ -124,7 +135,7 @@ export default{
     }
 
     .card__img {
-        @apply relative;
+        @apply relative h-42;
     }
 
     .back-drop {
@@ -134,7 +145,7 @@ export default{
     }
 
     .back-drop__icon {
-        @apply flex items-center justify-center;
+        @apply flex items-center justify-center cursor-pointer;
         @apply text-white text-lg w-9 h-9 rounded-full;
         @apply bg-transparent hover:bg-color-primary-2 transition duration-150;
     }
