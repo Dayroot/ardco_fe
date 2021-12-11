@@ -70,13 +70,13 @@
         </button>
         <!-- card button end -->
     </div>
+        
+    <ConfirmAddToCartModal
+        @closedConfirmAddToCard="confirmAddToCart = false"
+        :openConfirmAddToCard="confirmAddToCart"
+        :product="product"
 
-        <ConfirmAddToCartModal
-            @closedConfirmAddToCard="confirmAddToCart = false"
-            :openConfirmAddToCard="confirmAddToCart"
-            :product="product"
-        />
-
+    />
 
 </template>
 

@@ -40,8 +40,7 @@
                     </svg>
                 </div>
                 <Sidebar v-model:visible="openCart" position="right">
-                    <shopping-cart
-                        
+                    <shopping-cart       
                     ></shopping-cart>
                 </Sidebar>
                 <!--user icon -->

@@ -148,7 +148,7 @@
                 <!-- color end -->
                 <!-- buttons -->
                 <div :class="{'product__buttons':true, 'pointer-events-none opacity-40':activateEdit}">
-                    <button class="button-1 button-1--v2">
+                    <button class="button-1 button-1--v2" @click="setConfirmAddToCart">
                         <span class="mr-2">AGREGAR</span>
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -240,6 +240,13 @@
         :can-cancel="true"
         :is-full-page="fullPage"
     />
+    <ConfirmAddToCartModal
+        v-if="publicationbyProductId"
+        @closedConfirmAddToCard="confirmAddToCart = false"
+        :openConfirmAddToCard="confirmAddToCart"
+        :product=" publicationbyProductId.product"
+        :quantity="quantity"
+    />
 </template>
 
 <script>
@@ -266,6 +273,7 @@ export default {
         QuestionsModal: defineAsyncComponent(() => import( /* webpackChunkName: "questionsModal" */ '../components/modals/QuestionsModal')),
         ReviewsModal: defineAsyncComponent(() => import( /* webpackChunkName: "reviewsModal" */ '../components/modals/ReviewsModal')),
         Loading,
+        ConfirmAddToCartModal: defineAsyncComponent(() => import( /* webpackChunkName: "confirmAddToCartModal" */ '../components/modals/ConfirmAddToCartModal')),
     },
     data() {
         return {
@@ -317,10 +325,23 @@ export default {
             fullPage: true,
             questionAsked: "",
             editOption: false,
+            confirmAddToCart: false,
         }
     },
     methods: {
-
+        setConfirmAddToCart: function(){
+            if(this.quantity)
+                this.confirmAddToCart = true;
+            else{
+                Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    text: 'Para agregar el producto, debes especificar la cantidad.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        },
         setActivateEdit: function(){
             if(this.activateEdit)
                 this.publicationbyProductId = this.uneditePublication;
