@@ -33,8 +33,8 @@ import 'primeicons/primeicons.css';
 
 
 const httpLink = createHttpLink({
-    // uri: 'https://ardco-api-gateway.herokuapp.com/',
-    uri: 'http://localhost:4000/',
+    uri: 'https://ardco-api-gateway.herokuapp.com/',
+    // uri: 'http://localhost:4000/',
 });
 
 const authLink = setContext((_, {headers}) => {

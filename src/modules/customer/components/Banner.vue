@@ -1,7 +1,7 @@
 <template>
     <!-- banner -->
     <div class="banner">
-        <div class="banner__text">
+        <div class="banner__text marginsX-1">
             <h1 class="banner__title">
                 ARTE DE COLOMBIA
             </h1>
@@ -23,10 +23,8 @@ export default {
             required: true
         }
     },
-    watch: {
-        imgUrl: function(){
-            console.log(imgUrl);
-        }
+    created: function(){
+        console.log(this.imgUrl);
     }
 }
 </script>
@@ -43,7 +41,7 @@ export default {
     @apply text-color-secondary-1-1 text-5xl ;
 }
 .banner__text {
-    @apply absolute ml-24;
+    @apply absolute;
 }
 
 .banner__description {
