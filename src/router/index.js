@@ -74,6 +74,25 @@ const routes = [
 				name: 'account',
 				meta: {title: 'Cuenta', requiresAuth: true},
 				component:  () => import(/* webpackChunkName: "accountPage" */'../modules/customer/pages/AccountDataPage'),
+			},
+			{
+				path: 'carrito-de-compras',
+				name: 'shoppingCartPage',
+				meta: {title: 'Carrito de compras', requiresAuth: false},
+				component:  () => import(/* webpackChunkName: "shoppingCartPage" */'../modules/customer/pages/ShoppingCartPage'),
+			},
+			{
+				path: 'carrito-de-compras/pago',
+				name: 'payment',
+				meta: {title: 'Pago', requiresAuth: false},
+				component:  () => import(/* webpackChunkName: "paymentPage" */'../modules/customer/pages/PaymentPage'),
+				props: true,
+			},
+			{
+				path: 'orden-de-compra-completada',
+				name: 'orderCompleted',
+				meta: {title: 'Orden de compra completada', requiresAuth: false},
+				component:  () => import(/* webpackChunkName: "orderCompletedPage" */'../modules/customer/pages/OrderCompletedPage'),
 			}
 		]
 	},
@@ -102,6 +121,10 @@ router.beforeEach( async(to, from, next) => {
             timer: 3000
         });
 		nex({name: 'login', params:{ logOut: true }})
+	}
+
+	if(to.name=="payment" && from.name != "shoppingCartPage"){
+		next({name: 'no-found-page'})
 	}
 })
 

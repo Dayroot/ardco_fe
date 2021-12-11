@@ -1,45 +1,93 @@
 <template>
+    <!-- cart wrapper -->
+    <div class="container lg:grid grid-cols-12 gap-6 items-start pb-16 pt-4 marginsX-1">
+        <!-- product cart -->
+        <div class="xl:col-span-9 lg:col-span-8">
+            <!-- cart title -->
+            <div class="bg-gray-300 bg-opacity-40 rounded-t py-2 pl-12 pr-20 xl:pr-28 mb-4 hidden md:flex">
+                <p class="text-gray-600 text-center">Producto</p>
+                <p class="text-gray-600 text-center ml-auto mr-16 xl:mr-24">Cantidad</p>
+                <p class="text-gray-600 text-center">Total</p>
+            </div>
+            <!-- cart title end -->
 
-    <div class="relative">
-        <h1 class="sidebar__title">Carrito de Compras</h1>
-        <section class="sidebar__products-wrapper">
-            <div v-for="(productCart, index) in shoppingCart" :key="index">
-                <article class="product-cart">
-                    <figure class="product-cart__img">
-                        <img :src="productCart.product.imgUrls[0]" alt="" class="h-full w-full object-cover">
-                    </figure>
-                    <div class="product-cart__content">
-                        <div class="w-38 h-8 overflow-hidden">
-                            <h3 class="product-cart__title">{{productCart.product.name}}</h3>
+            <!-- shipping carts -->
+            <div class="space-y-4">
+                <div v-for="(productCart, index) in shoppingCart" :key="index">
+                    <!-- single cart -->
+                    <div
+                        class="flex items-center md:justify-between gap-4 md:gap-6 p-4 border border-gray-200 rounded flex-wrap md:flex-nowrap text-color-secondary-2-0">
+                        <!-- cart image -->
+                        <div class="w-32 flex-shrink-0">
+                            <img :src="productCart.product.imgUrls[0]" class="w-full h-full object-cover">
                         </div>
-                        <div class="flex justify-between">
-                            <p class="product-cart__price">${{productCart.product.price}}</p>
-                            <div class="button-delete" @click="setDeleteProductCart(productCart.product._id, index)">
-                                <i class="fas fa-trash"></i>
-                            </div>
+                        <!-- cart image end -->
+                        <!-- cart content -->
+                        <div class="md:w-1/3 w-full">
+                            <router-link 
+                                :to="{name: 'productDetailPage', params: {productId: productCart.product._id}}" 
+                                class="mb-3 xl:text-xl textl-lg font-normal uppercase hover:text-color-primary-0 transition"
+                            >
+                                {{productCart.product.name}}
+                            </router-link>
+                            <p class="text-primary font-semibold">${{productCart.product.price}}</p>
+                            <p :class="{'font-medium': true, 'text-green-600':productCart.product.stock, 'text-red-600': !productCart.product.stock, }">{{ productCart.product.stock == 0 ? "Agotado" : "En stock" }}</p>
                         </div>
+                        <!-- cart content end -->
+                        <!-- cart quantity -->
                         <div :class="{'quantity-selector__content':true, 'pointer-events-none opacity-40':activateEdit}">
                             <div class="quantity-selector__button" @click="setQuantity('subtract', productCart.product._id, productCart.quantity, index)">-</div>
                             <div class="quantity-selector__value">{{productCart.quantity}}</div>
                             <div class="quantity-selector__button" @click="setQuantity('add',productCart.product._id, productCart.quantity, index)">+</div>
                         </div>
+                        <!-- cart quantity end -->
+                        <div class="ml-auto md:ml-0">
+                            <p class="text-primary text-lg font-semibold">${{productCart.product.price * productCart.quantity}}</p>
+                        </div>
+                        <div class="button-delete">
+                            <i class="fas fa-trash"></i>
+                        </div>
                     </div>
-                </article>
+                    <!-- single cart end -->
+                </div>
             </div>
-        </section>
-        <footer class="sidebar__footer">
-            <div class="flex gap-4">
-                <p>Total:</p>
-                <span class=" text-color-primary-2 font-light">{{total}}</span>
+            <!-- shipping carts end -->
+        </div>
+        <!-- product cart end -->
+        <!-- order summary -->
+        <div class="xl:col-span-3 lg:col-span-4 border border-gray-200 px-4 py-4 rounded mt-6 lg:mt-0">
+            <h4 class="text-gray-800 text-lg mb-4 font-medium uppercase">ORDEN DE COMPRA</h4>
+            <div class="space-y-1 text-gray-600 pb-3 border-b border-gray-200">
+                <div class="flex justify-between">
+                    <p>Subtotal</p>
+                    <p>{{subtotal}}</p>
+                </div>
+                <div class="flex justify-between">
+                    <p>Envio</p>
+                    <p :class="{' text-green-600 font-medium':!costShipping}">{{ costShipping == 0 ? "Gratis" : costShipping }}</p>
+                </div>
             </div>
-            <router-link :to="{name: 'shoppingCartPage'}" class="button-2 hover:border-color-primary-2" >Finalizar Compra</router-link>
-        </footer>
-    </div>
+            <div class="flex justify-between my-3 text-gray-800 font-semibold uppercase">
+                <h4>Total</h4>
+                <h4>{{total}}</h4>
+            </div>
 
+            <!-- checkout -->
+            <router-link :to="{name: 'payment'}" class="button-1 rounded-t">
+                Ir a pagar
+            </router-link>
+            <!-- checkout end -->
+        </div>
+        <!-- order summary end -->
+    </div>
+    <!-- cart wrapper end -->
 </template>
+
 <script>
 import jwt_decode from "jwt-decode";
 import gql from "graphql-tag";
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
     data() {
@@ -47,6 +95,8 @@ export default {
             shoppingCartUserAuth: null,
             shoppingCart: null,
             total:0,
+            subtotal:0,
+            costShipping:0,
         }
     },
     methods:{
@@ -88,8 +138,9 @@ export default {
             }
             this.total = 0;
             for(let item of this.shoppingCart){
-                this.total += item.quantity * item.product.price;
+                this.subtotal += item.quantity * item.product.price;
             }
+            this.total = this.subtotal + this.costShipping;
         },
         setShoppingCart: async function(){
 
@@ -105,11 +156,13 @@ export default {
             }
             this.total = 0;
             for(let item of this.shoppingCart){
-                this.total += item.quantity * item.product.price;
+                this.subtotal += item.quantity * item.product.price;
             }
+            this.total = this.subtotal + this.costShipping;
             
         },
         getShoppingCart: async function(userId){
+            this.isLoading = true;
             await this.$apollo.query({
                 query: gql`
                     query ($userId: Int!) {
@@ -137,6 +190,7 @@ export default {
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
             });
+            this.isLoading = false;
         },
         updateShoppingCart: async function(userId, productId, quantity){
             await this.$apollo.mutate({
@@ -207,41 +261,12 @@ export default {
     mounted: async function() {
         this.setShoppingCart();
     },
+    watch: {
+        statusCart: function(){
+            if(this.statusCart)
+                this.cart = true;
+        }
+    }
 }
 </script>
 
-<style lang="css" scoped>
-    .sidebar__title {
-        @apply text-2xl text-color-secondary-2-0 font-medium  text-center border-b-2 border-color-primary-2 mb-6 py-3 sticky z-20 top-0;
-        @apply bg-color-secondary-1-1 shadow w-full;
-    }
-    .sidebar__products-wrapper {
-        @apply flex flex-col gap-4 overflow-hidden;
-    }
-
-    .product-cart {
-        @apply flex gap-2 shadow p-2 bg-gray-200 overflow-hidden;
-    }
-
-    .product-cart__title {
-        @apply text-lg pr-2 w-full text-color-secondary-2-0  truncate;
-    }
-
-    .product-cart__img {
-        @apply  w-24 h-24 flex-shrink-0;
-    }
-
-    .product-cart__content {
-        @apply flex flex-col gap-1;
-    }
-    .product-cart__price{
-        @apply text-base text-color-primary-0 font-light;
-    }
-
-    .sidebar__footer{
-    @apply text-2xl text-color-secondary-2-0 font-medium  text-center border-b-2  border-t-2 border-color-primary-2 mt-6 py-3 sticky z-20 -bottom-4;
-        @apply bg-color-secondary-1-1 shadow w-full;
-        @apply flex gap-2 justify-center flex-col;
-    }
-
-</style>

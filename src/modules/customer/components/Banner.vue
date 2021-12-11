@@ -2,15 +2,17 @@
     <!-- banner -->
     <div class="banner">
         <div class="banner__text marginsX-1">
-            <h1 class="banner__title">
-                ARTE DE COLOMBIA
-            </h1>
-            <p class="banner__description">
-                Los mejores productos tipicos en un solo lugar!
-            </p>
+            <div class="bg-black bg-opacity-50 rounded p-6">
+                <h1 class="banner__title">
+                    {{banner.title}}
+                </h1>
+                <p class="banner__description">
+                    {{banner.body}}
+                </p>
+            </div>
         </div>
         <div>
-            <img class="banner__img" :src="imgUrl" alt="">
+            <img class="banner__img" :src="banner.img" alt="">
         </div>
     </div>
     <!-- banner end -->
@@ -18,10 +20,13 @@
 <script>
 export default {
     props: {
-        imgUrl: {
-            type: String,
+        banner: {
+            type: Object,
             required: true
         }
+    },
+    created() {
+        console.log(this.banner);
     },
 }
 </script>

@@ -3,14 +3,14 @@
         <Galleria
             :showThumbnails="false"
             :showItemNavigators="true"
-            :value="imgs"
+            :value="banners"
             :circular="true"
             :autoPlay="true"
             :transitionInterval="1000"
         >
-            <template #item="image">
+            <template #item="banner">
                     <banner
-                        :imgUrl="image.item"
+                        :banner="banner.item"
                     ></banner>
             </template>
         </Galleria>
@@ -81,7 +81,13 @@ export default {
     },
     data() {
         return {
-            imgs: [ "https://rtvc-assets-radionacional-v2.s3.amazonaws.com/s3fs-public/senalradio/articulo-noticia/galeriaimagen/colombia-2434911_1280.jpg"],
+            banners: [ 
+                {
+                   img:"https://rtvc-assets-radionacional-v2.s3.amazonaws.com/s3fs-public/senalradio/articulo-noticia/galeriaimagen/colombia-2434911_1280.jpg",
+                   title: "ARTE DE COLOMBIA",
+                   body: "Los mejores productos tipicos en un solo lugar!"
+                }
+            ],
             products:[],
             responsiveOptions: [
                 {

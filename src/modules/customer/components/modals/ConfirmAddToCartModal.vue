@@ -70,6 +70,8 @@ export default {
             confirmAddToCart: false,
             quantityProducts: 0,
             total:0,
+            shoppingCartUserAuth: null,
+
         }
     },
     methods:{
@@ -81,26 +83,27 @@ export default {
             let notFound = true;
             let totalPrice = 0;
             let quantityProducts = 0;
-
-            const token = localStorage.getItem('token_access');
-
+            const token = await localStorage.getItem('token_access');
             if(token){
                 userId = jwt_decode(token).user_id;
-                shoppingCart = this.getShoppingCart(userId);
+                await this.getShoppingCart(userId);
+                shoppingCart = this.shoppingCartUserAuth;
+                console.log(shoppingCart);
             }else{
                 shoppingCart = await JSON.parse(localStorage.getItem('shoppingCart'));
             }
-
             if(shoppingCart  && shoppingCart.length ){
-                await shoppingCart.forEach( (item, index) => {
+                 shoppingCart.forEach( (item, index) => {
+
+                    totalPrice += item.product.price * item.quantity;
+                    quantityProducts += item.quantity;
+
                     if(item.product._id == this.product._id ){
                         shoppingCart[index].quantity += this.quantity;
                         notFound = false;
                         totalPrice += item.product.price * this.quantity;
                         quantityProducts += this.quantity;
                     }
-                    totalPrice += item.product.price * item.quantity;
-                    quantityProducts += item.quantity;
                 });
                 if(notFound){
                     const newProduct =  {product: {...this.product}, quantity: this.quantity};
@@ -127,8 +130,6 @@ export default {
                 query: gql`
                     query ($userId: Int!) {
                         shoppingCartByUserId(userId: $userId) {
-                            _id
-                            userId
                             products {
                                 quantity
                                 product {
@@ -147,8 +148,10 @@ export default {
                 }
             })
             .then( response => {
-                console.log(response.data.shoppingCartByUserId.products);
-                return response.data.shoppingCartByUserId.products
+                this.shoppingCartUserAuth = response.data.shoppingCartByUserId.products.map( element => { return {...element}} );
+                return response.data.shoppingCartByUserId.products.map( element => { return {...element}} );
+
+                
             })
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
@@ -161,8 +164,17 @@ export default {
                 mutation: gql`
                     mutation ($userId: Int!, $cartProductInput: CartProductInput) {
                         updateCartProduct(userId: $userId, cartProductInput: $cartProductInput) {
-                            _id
-                            userId
+                            products {
+                                quantity
+                                product {
+                                    _id
+                                    name
+                                    price
+                                    stock
+                                    imgUrls
+                                }
+                            }
+                            
                         }
                     }
                 `,
@@ -185,9 +197,14 @@ export default {
         }
     },
     watch:{
-        openConfirmAddToCard: function(){
+        openConfirmAddToCard: async function(){
             if(this.openConfirmAddToCard){
                 this.confirmAddToCart = this.openConfirmAddToCard;
+                const token = await localStorage.getItem('token_access');
+                if(token){
+                    const userId = jwt_decode(token).user_id;
+                    await this.getShoppingCart(userId);
+                }
                 this.addToCart();
             }
         },
