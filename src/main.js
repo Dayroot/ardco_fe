@@ -30,6 +30,10 @@ import Dialog from 'primevue/dialog';
 import ProgressBar from 'primevue/progressbar';
 import ColorPicker from 'primevue/colorpicker';
 import Sidebar from 'primevue/sidebar';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import InputMask from 'primevue/inputmask';
+
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.css';
@@ -37,8 +41,8 @@ import 'primeicons/primeicons.css';
 
 
 const httpLink = createHttpLink({
-    uri: 'https://ardco-api-gateway.herokuapp.com/',
-    // uri: 'http://localhost:4000/',
+    //uri: 'https://ardco-api-gateway.herokuapp.com/',
+    uri: 'http://localhost:4000/',
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -78,4 +82,7 @@ createApp(App)
 .component('ColorPicker', ColorPicker)
 .component('Galleria', Galleria)
 .component('Sidebar', Sidebar)
+.component('DataTable', DataTable)
+.component('Column', Column)
+.component('InputMask', InputMask)
 .mount('#app')

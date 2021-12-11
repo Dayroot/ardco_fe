@@ -303,7 +303,7 @@ export default {
     .section__header{
         padding:20px 50px;
         margin-bottom: 20px;
-        @apply bg-color-primary-0 bg-opacity-90;
+        @apply bg-gray-300 bg-opacity-40;
     }
     .section__header-info{
         border-radius: 20px 20px 0 0;

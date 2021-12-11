@@ -3,14 +3,14 @@
         <Galleria
             :showThumbnails="false"
             :showItemNavigators="true"
-            :value="imgs"
+            :value="banners"
             :circular="true"
             :autoPlay="true"
             :transitionInterval="1000"
         >
-            <template #item="image">
+            <template #item="banner">
                     <banner
-                        :imgUrl="image.item"
+                        :banner="banner.item"
                     ></banner>
             </template>
         </Galleria>
@@ -57,7 +57,13 @@ export default {
     },
     data() {
         return {
-            imgs: [ "https://media.fashionnetwork.com/m/0bcb/9013/b531/26bd/25e3/865f/f137/143e/35b6/1f76/1f76.jpg"],
+            banners: [ 
+                {
+                   img:"https://rtvc-assets-radionacional-v2.s3.amazonaws.com/s3fs-public/senalradio/articulo-noticia/galeriaimagen/colombia-2434911_1280.jpg",
+                   title: "ARTE DE COLOMBIA",
+                   body: "Los mejores productos tipicos en un solo lugar!"
+                }
+            ],
             products:[],
             responsiveOptions: [
                 {

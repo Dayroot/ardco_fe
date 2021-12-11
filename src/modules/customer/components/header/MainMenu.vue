@@ -49,7 +49,7 @@ export default {
             activateExpendable: false,
             categories: [],
         }
-    },
+    }, 
     methods: {
         setActivateExpendable: function(){
             this.activateExpendable = !this.activateExpendable;

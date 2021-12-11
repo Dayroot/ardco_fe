@@ -72,6 +72,7 @@
     </div>
         
     <ConfirmAddToCartModal
+        v-if="confirmAddToCart"
         @closedConfirmAddToCard="confirmAddToCart = false"
         :openConfirmAddToCard="confirmAddToCart"
         :product="product"
