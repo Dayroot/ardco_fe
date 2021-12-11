@@ -102,7 +102,7 @@ export default {
                         }
                     }
                 `,
-                variables: {           
+                variables: {
                 }
             })
             .then( response => {
