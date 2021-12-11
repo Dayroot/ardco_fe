@@ -26,8 +26,10 @@ const isOwnsPublication = async( route ) => {
         })
         .then( response => {
             const ownerId = response.data.productById.userId;
-            if( ownerId == userId )
+            if( ownerId == userId ){
+                alert("true");
                 return true;
+            }
             else 
                 return false;
         })

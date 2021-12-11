@@ -1,25 +1,30 @@
 <template>
-
     <div class="marginsX-1 pt-5">
         <product-section
             :products="products"
         >
         </product-section>
     </div>
-
-
-
+    <loading v-model:active="isLoading"
+                :can-cancel="true"
+                :is-full-page="fullPage"
+    />
 </template>
 
 <script>
 import gql from "graphql-tag";
 import { defineAsyncComponent } from 'vue';
+import Loading from 'vue-loading-overlay';
 
 export default{
     props : {
         categoryId:{
             type: String,
-            default: "61aed7ed51bb46f11ffb3b13",
+            required: true,
+        },
+        categoryName:{
+            type: String,
+            required: true,
         }
     },
     components:{
@@ -28,45 +33,59 @@ export default{
     },
     data: function(){
         return {
-            products:[], 
+            products:[],
+            isLoading: false,
+            fullPage: true,
         } 
-    }, 
-    created: async function() {
-        this.$apollo.query({
-            query: gql`
-                query ($categoryId: String!) {
-                    productsByCategory(categoryId: $categoryId) {
-                        _id
-                        name
-                        price
-                        stock
-                        sold
-                        features {
-                            color
-                            material
-                            department
-                        }
-                        category {
+    },
+    methods:{
+        getProducts: async function(){
+            this.isLoading = true;
+            await this.$apollo.query({
+                query: gql`
+                    query ($categoryId: String!) {
+                        productsByCategory(categoryId: $categoryId) {
                             _id
                             name
+                            price
+                            stock
+                            sold
+                            features {
+                                color
+                                material
+                                department
+                            }
+                            category {
+                                _id
+                                name
+                            }
+                            imgUrls
+                            average_reviews
+                            total_reviews
+                            userId
                         }
-                        imgUrls
-                        average_reviews
-                        total_reviews
-                        userId
                     }
+                `,
+                variables: {
+                    categoryId: this.categoryId,            
                 }
-            `,
-            variables: {
-                categoryId: this.categoryId,            
-            }
-        })
-        .then( response => {
-            this.products = response.data.productsByCategory;
-        })
-        .catch(e => {
-            console.log(JSON.stringify(e, null, 2));
-        });
+            })
+            .then( response => {
+                this.products = response.data.productsByCategory;
+            })
+            .catch(e => {
+                console.log(JSON.stringify(e, null, 2));
+            });
+            this.isLoading = false;
+        },
+    },
+    watch: {
+        categoryId: function(){
+            this.getProducts();
+        }
+    },
+    created: function() {
+        this.getProducts();
     },
     
 }

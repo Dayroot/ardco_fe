@@ -23,9 +23,6 @@ export default {
             required: true
         }
     },
-    created: function(){
-        console.log(this.imgUrl);
-    }
 }
 </script>
 <style lang="css" scoped>

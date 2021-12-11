@@ -1,18 +1,17 @@
 <template>
-    <div class="flex flex-col">
+    <div class="flex flex-col" @mouseleave="activateExpendable = false">
         <nav class="menu">
-            <router-link
+            <div
                 to=""
                 class="menu-button"
                 @mouseenter="setActivateExpendable"
-                @mouseleave="setActivateExpendable"
                 @click="setActivateExpendable"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" class="menu-button-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
                 <span>Categorias</span>
-            </router-link>
+            </div>
             <router-link :to="{name:'signUp'}" class="menu-button">
                 <svg xmlns="http://www.w3.org/2000/svg" class="menu-button-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
@@ -25,38 +24,61 @@
                 </svg>
                 <span>Vender</span>
             </router-link>
-            <router-link :to="{name: 'products'}" class="menu-button">
-                <svg xmlns="http://www.w3.org/2000/svg" class="menu-button-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-                <span>Sombreros</span>
-                <!--<span>Con&oacute;cenos</span>-->
-            </router-link>
         </nav>
         <div class="expandable" v-if="activateExpendable">
-            <div class="category">
-                <img class="h-full object-cover rounded" src="../../../../assets/images/picture-1.jpg" alt="">
-                <div class="category__back-drop">
-                    <p class="category__title">instrumentos</p>
-                    <p class="category__sub-title">ver ahora</p>
-                </div>
+            <div v-for="(category, index) in categories" :key="index">
+                <router-link :to="{name:'products', params:{ categoryId: category._id, categoryName: category.name } }" class="category">
+                    <img class="category__img" :src="category.img" alt="">
+                    <div class="category__back-drop">
+                        <div class="category__tags">
+                            <p class="category__title">{{category.name}}</p>
+                            <p class="category__sub-title">ver ahora</p>
+                        </div>
+                    </div>
+                </router-link>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import gql from "graphql-tag";
 export default {
     data() {
         return {
             activateExpendable: false,
+            categories: [],
         }
     },
     methods: {
         setActivateExpendable: function(){
             this.activateExpendable = !this.activateExpendable;
-        }
+        },
+        getCategories: async function(){
+            await this.$apollo.query({
+                query: gql`
+                    query {
+                        listCategories {
+                            _id
+                            name
+                            img
+                        }
+                    }
+                `,
+                variables: {           
+                }
+            })
+            .then( response => {
+                this.categories = response.data.listCategories;
+            })
+            .catch(e => {
+                console.log(JSON.stringify(e, null, 2));
+            });
+        }  
     },
+    created: function(){
+        this.getCategories();
+    }
 }
 </script>
 <style lang="css" scoped>
@@ -108,24 +130,35 @@ export default {
 }
 
 .expandable{
-    @apply bg-color-secondary-1-1 hidden md:flex justify-center items-center;
-    @apply w-screen h-96 absolute top-25 z-10 gap-12;
+    @apply  hidden md:flex justify-center items-center;
+    @apply w-screen h-96 absolute top-26 z-10 gap-12 shadow;
+    background: linear-gradient(180deg, rgba(222,170,117,1) 4%, rgba(222,170,117,1) 22%, rgba(37,31,29,1) 100%);
 }
 
 .category{
-    @apply bg-red-300 w-52 h-72 flex justify-center shadow-lg rounded relative;
+    @apply  w-52 h-72 flex justify-center shadow rounded-md relative text-color-secondary-2-0;
 }
 
 .category__back-drop {
-    @apply hover:bg-black hover:bg-opacity-40 w-full h-full absolute;
-    @apply flex items-end justify-center;
+    @apply bg-black bg-opacity-20 hover:bg-opacity-60 w-full h-full absolute transition;
+    @apply flex items-end justify-center rounded-md;
 }
 
 .category__title{
-    @apply w-80% h-8 bg-color-primary-0 rounded mb-4 text-lg uppercase text-center;
+    @apply w-80% h-8 bg-color-secondary-2-0 text-color-secondary-1-1 rounded text-lg uppercase text-center font-normal;
 }
 
 .category__sub-title{
-    
+    @apply w-50% h-6 bg-color-primary-2 rounded text-xs uppercase text-center relative bottom-2 flex items-center justify-center;
 }
+
+.category__tags{
+    @apply flex flex-col mb-4 w-full items-center relative cursor-pointer;
+}
+
+.category__img {
+    @apply h-full w-full object-cover rounded-md hover:scale-125 transform transition;
+}
+
+
 </style>

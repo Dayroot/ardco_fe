@@ -1,8 +1,8 @@
 <template>
     <loading v-model:active="isLoading"
                 :can-cancel="true"
-                :on-cancel="onCancel"
-                :is-full-page="fullPage"/>
+                :is-full-page="fullPage"
+    />
 
     <div class="flex">
         <!-- filter bar -->
@@ -82,10 +82,8 @@ export default{
         }   
     },
     methods: {
-        onCancel() {
-            console.log('User cancelled the loader.')
-        },
         filterProducts: function(filters){
+            
             if(!filters || !Object.keys(filters).length)
                 this.filteredProducts = this.products;
             else {     
@@ -146,10 +144,8 @@ export default{
 
     mounted() {
         this.isLoading = true;
-        setTimeout(() => {
-                    this.isLoading = false
-                }, 300);
         this.filterProducts();
+        this.isLoading = false;
     },
     watch:{
         products: function(){

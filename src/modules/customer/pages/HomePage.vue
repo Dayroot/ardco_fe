@@ -1,9 +1,8 @@
 <template>
     <div>
         <Galleria
-            :showIndicatorsOnItem="true"
-            :showIndicators="true"
             :showThumbnails="false"
+            :showItemNavigators="true"
             :value="imgs"
             :circular="true"
             :autoPlay="true"
@@ -23,7 +22,7 @@
                 :numScroll="1"
                 :responsiveOptions="responsiveOptions"
                 :circular="true"
-                :autoplayInterval="3000"
+                :autoplayInterval="2000"
             >
                 <template #item="product">
                         <card :product="product.data"/>
@@ -31,6 +30,11 @@
             </Carousel>
         </div>
     </div>
+    <loading v-model:active="isLoading"
+                :can-cancel="true"
+                :on-cancel="onCancel"
+                :is-full-page="fullPage"
+    />
 </template>
 <script>
 import { defineAsyncComponent } from 'vue';
@@ -47,45 +51,47 @@ export default {
             imgs: [ "https://media.fashionnetwork.com/m/0bcb/9013/b531/26bd/25e3/865f/f137/143e/35b6/1f76/1f76.jpg"],
             products:[],
             responsiveOptions: [
-            {
-    breakpoint: '1280px',
-    numVisible: 4,
-    numScroll: 1
-   },
-            {
-    breakpoint: '1024px',
-    numVisible: 3,
-    numScroll: 1
-   },
-            {
-    breakpoint: '768px',
-    numVisible: 2,
-    numScroll: 1
-   },
-   {
-    breakpoint: '640px',
-    numVisible: 2,
-    numScroll: 1
-   },
-   {
-    breakpoint: '480px',
-    numVisible: 1,
-    numScroll: 1
-   },
-        
-            {
-    breakpoint: '320px',
-    numVisible: 1,
-    numScroll: 1
-   },
-
-      ],
+                {
+                    breakpoint: '1280px',
+                    numVisible: 4,
+                    numScroll: 1
+                },
+                {
+                    breakpoint: '1024px',
+                    numVisible: 3,
+                    numScroll: 1
+                },
+                {
+                    breakpoint: '768px',
+                    numVisible: 2,
+                    numScroll: 1
+                },
+                {
+                    breakpoint: '640px',
+                    numVisible: 2,
+                    numScroll: 1
+                },
+                {
+                    breakpoint: '480px',
+                    numVisible: 1,
+                    numScroll: 1
+                },
+            
+                {
+                    breakpoint: '320px',
+                    numVisible: 1,
+                    numScroll: 1
+                },
+		    ],
+            isLoading: false,
+            fullPage: true,
         }
     },
 
     methods: {
         getProducts: async function(){
-            this.$apollo.query({
+            this.isLoading = true;
+            await this.$apollo.query({
                 query: gql`
                     query {
                         listProducts {
@@ -103,12 +109,13 @@ export default {
                 }
             })
             .then( response => {
-                this.products = response.data.listProducts.slice(-4,);
+                this.products = response.data.listProducts.slice(-6,);
             })
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
             });
-            }
+            this.isLoading = false;
+        }
     },
     created: function(){
         this.getProducts();

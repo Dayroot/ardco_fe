@@ -9,8 +9,8 @@ const apolloClient = new ApolloClient({
 
 const isAuthenticatedUser = async() => {
 
-    const access_token = localStorage.getItem('access_token');
-    const refresh_token = localStorage.getItem('refresh_token');
+    const access_token = localStorage.getItem('token_access');
+    const refresh_token = localStorage.getItem('token_refresh');
 
     if( !access_token && !refresh_token)
         return false;
@@ -33,7 +33,7 @@ const isAuthenticatedUser = async() => {
     } catch (error) {
         localStorage.clear();
         alert("Su sesión expiró, por favor vuelva a iniciar sesión");
-        return false;
+        nex({name: 'login'})
     }
 };
 

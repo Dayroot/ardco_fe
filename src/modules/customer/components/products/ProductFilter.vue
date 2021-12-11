@@ -198,7 +198,7 @@ export default{
 
 
     .container {
-        @apply  w-screen h-screen absolute bg-black bg-opacity-60 z-30 lg:w-auto lg:relative lg:bg-transparent;
+        @apply  w-screen h-screen absolute bg-black bg-opacity-60 z-30 lg:z-0 lg:w-auto lg:relative lg:bg-transparent;
         @apply inset-0 lg:inset-auto;
         @apply hidden lg:block;
     }
