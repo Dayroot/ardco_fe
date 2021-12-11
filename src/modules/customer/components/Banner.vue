@@ -6,7 +6,7 @@
                 ARTE DE COLOMBIA
             </h1>
             <p class="banner__description">
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed, tenetur sint explicabo doloremque fuga alias placeat totam aliquam repudiandae commodi praesentium blanditiis voluptatum eligendi minus odit non neque dignissimos id!
+                Los mejores productos tipicos en un solo lugar!
             </p>
         </div>
         <div>
@@ -35,14 +35,14 @@ export default {
 }
 
 .banner__title {
-    @apply text-color-secondary-1-1 text-5xl ;
+    @apply text-color-secondary-2-0 text-5xl ;
 }
 .banner__text {
     @apply absolute;
 }
 
 .banner__description {
-    @apply text-gray-300 text-lg max-w-md;
+    @apply text-color-secondary-2-0 text-lg max-w-md;
 }
 
 </style>

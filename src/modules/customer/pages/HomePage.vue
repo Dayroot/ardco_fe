@@ -14,6 +14,30 @@
                     ></banner>
             </template>
         </Galleria>
+
+        <div class="mt-32 marginsX-1">
+            <h2 class="carousel__title">Comprar por categoria!</h2>
+            <div class="grid lg:grid-cols-2 sm:grid-cols-2 gap-3">
+                <div v-for="(category, index) in categories" :key="index">
+                    <div class="category__back-drop">
+                        <router-link
+                            :to="{name:'products', params:{ categoryId: category._id, categoryName: category.name } }"
+                            class="flex justify-center items-center overflow-hidden h-56 w-full"
+                        >
+                            <img class="object-cover w-full h-full" :src="category.img" alt="">
+
+                            <div class="w-15% h-5% absolute bg-black bg-opacity-40  justify-center items-center flex rounded-sm">
+                                <p class="text-color-secondary-1-1 hover:text-color-primary-0 transition">{{category.name}}</p>
+                            </div>
+                            
+                        
+                        </router-link>
+                    </div>
+                </div>
+            </div>
+        </div>    
+
+
         <div class="mt-32 marginsX-1">
             <h2 class="carousel__title">Nuevos Productos!</h2>
             <Carousel
@@ -57,7 +81,7 @@ export default {
     },
     data() {
         return {
-            imgs: [ "https://media.fashionnetwork.com/m/0bcb/9013/b531/26bd/25e3/865f/f137/143e/35b6/1f76/1f76.jpg"],
+            imgs: [ "https://rtvc-assets-radionacional-v2.s3.amazonaws.com/s3fs-public/senalradio/articulo-noticia/galeriaimagen/colombia-2434911_1280.jpg"],
             products:[],
             responsiveOptions: [
                 {
@@ -83,6 +107,7 @@ export default {
 		    ],
             isLoading: true,
             fullPage: true,
+            categories: [],
         }
     },
 
@@ -111,10 +136,32 @@ export default {
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
             });
+        },
+        getCategories: async function(){
+            await this.$apollo.query({
+                query: gql`
+                    query {
+                        listCategories {
+                            _id
+                            name
+                            img
+                        }
+                    }
+                `,
+                variables: {           
+                }
+            })
+            .then( response => {
+                this.categories = response.data.listCategories;
+            })
+            .catch(e => {
+                console.log(JSON.stringify(e, null, 2));
+            });
         }
     },
     created: function(){
         this.getProducts();
+        this.getCategories();
         this.isLoading = false;
     },
     watch: {
@@ -129,4 +176,9 @@ export default {
     .carousel__title{
         @apply text-color-secondary-2-0 text-3xl mb-6 pl-11;
     }
+    .category__back-drop {
+    @apply bg-black bg-opacity-20 hover:bg-opacity-60 transition;
+    @apply rounded-md;
+    }
+
 </style>
