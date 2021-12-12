@@ -60,7 +60,7 @@
         <!-- card content end -->
 
         <!-- card button -->
-        <button class="button-1 text-sm" @click="confirmAddToCart = true">
+        <button class="button-1 text-sm" @click="setConfirmAddToCart">
             <span class="mr-2">AGREGAR</span>
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -74,7 +74,7 @@
     <ConfirmAddToCartModal
         v-if="confirmAddToCart"
         @closedConfirmAddToCard="confirmAddToCart = false"
-        :openConfirmAddToCard="confirmAddToCart"
+        :openConfirmAddToCard="true"
         :product="product"
 
     />
@@ -91,7 +91,7 @@ export default{
         }
     },
     components: {
-        ConfirmAddToCartModal: defineAsyncComponent(() => import( /* webpackChunkName: "confirmAddToCartModal" */ '../modals/ConfirmAddToCartModal')),
+        ConfirmAddToCartModal: defineAsyncComponent(() => import( /* webpackChunkName: "confirmAddToCartModal2" */ '../modals/ConfirmAddToCartModal')),
     },
     data() {
         return {
@@ -102,7 +102,9 @@ export default{
         }
     },
     methods: {
-    
+        setConfirmAddToCart: function(){
+            this.confirmAddToCart = true;
+        },
         setLike: function() {
             this.like = !this.like;
         },

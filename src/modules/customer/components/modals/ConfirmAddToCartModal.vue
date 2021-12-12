@@ -42,7 +42,7 @@
         <template #footer>
            <div class="flex gap-4 justify-center">
                <button class="button-2 hover:border-color-primary-2" @click="confirmAddToCart = false">Seguir comprando</button>
-               <button class="button-2 hover:border-color-primary-2">Finalizar Compra</button>
+               <button class="button-2 hover:border-color-primary-2" @click="setConfirmAddToCart">Finalizar Compra</button>
            </div>
         </template>
     </Dialog>
@@ -75,7 +75,10 @@ export default {
         }
     },
     methods:{
-
+        setConfirmAddToCart:  function(){
+            this.confirmAddToCart = false
+            this.$router.push({name: 'shoppingCartPage'})
+        },
         addToCart: async function(){
 
             let userId;
@@ -83,6 +86,7 @@ export default {
             let notFound = true;
             let totalPrice = 0;
             let quantityProducts = 0;
+
             const token = await localStorage.getItem('token_access');
             if(token){
                 userId = jwt_decode(token).user_id;

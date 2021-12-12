@@ -1,5 +1,5 @@
 <template>
-    <div class="marginsX-1 pt-5">
+    <div class="marginsX-1 pt-5" v-if="products">
         <product-section
             :products="products"
         >
@@ -34,7 +34,7 @@ export default{
     },
     data: function(){
         return {
-            products:[],
+            products:null,
             isLoading: false,
             fullPage: true,
         } 
@@ -86,6 +86,7 @@ export default{
         }
     },
     created: function() {
+        this.isLoading = false;
         this.getProducts();
     },
     

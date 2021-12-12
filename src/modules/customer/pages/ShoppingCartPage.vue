@@ -18,7 +18,7 @@
                     <div
                         class="flex items-center md:justify-between gap-4 md:gap-6 p-4 border border-gray-200 rounded flex-wrap md:flex-nowrap text-color-secondary-2-0">
                         <!-- cart image -->
-                        <div class="w-32 flex-shrink-0">
+                        <div class="w-32 h-24 flex-shrink-0">
                             <img :src="productCart.product.imgUrls[0]" class="w-full h-full object-cover">
                         </div>
                         <!-- cart image end -->
@@ -73,14 +73,19 @@
             </div>
 
             <!-- checkout -->
-            <router-link :to="{name: 'payment'}" class="button-1 rounded-t">
+            <button class="button-1 rounded-t" @click="redirectPayment">
                 Ir a pagar
-            </router-link>
+            </button>
             <!-- checkout end -->
         </div>
         <!-- order summary end -->
     </div>
     <!-- cart wrapper end -->
+    <Loading 
+        v-model:active="isLoading"
+        :can-cancel="true"
+        :is-full-page="fullPage"
+    />
 </template>
 
 <script>
@@ -99,7 +104,19 @@ export default {
             costShipping:0,
         }
     },
+    components:{
+      Loading,  
+    },
     methods:{
+        redirectPayment: async function(){
+            
+            const token = await localStorage.getItem('token_access');
+            if(token)
+                this.$router.push({name: 'payment'});
+            else
+                this.$router.push({name: 'completeUserData'});
+
+        },
         setDeleteProductCart: async function(productId, index){
             const token = await localStorage.getItem('token_access');
             if(token){
@@ -117,6 +134,7 @@ export default {
             }
         },
         setQuantity: async function(type, productId, currentQuantity, index){
+            this.isLoading = true;
             const token = await localStorage.getItem('token_access');
             let changeQuantity;
             if(type == 'subtract')
@@ -141,9 +159,10 @@ export default {
                 this.subtotal += item.quantity * item.product.price;
             }
             this.total = this.subtotal + this.costShipping;
+            this.isLoading = false;
         },
         setShoppingCart: async function(){
-
+            this.isLoading = true;
             const token = await localStorage.getItem('token_access');
 
             if(token){
@@ -159,10 +178,10 @@ export default {
                 this.subtotal += item.quantity * item.product.price;
             }
             this.total = this.subtotal + this.costShipping;
+            this.isLoading = false;
             
         },
         getShoppingCart: async function(userId){
-            this.isLoading = true;
             await this.$apollo.query({
                 query: gql`
                     query ($userId: Int!) {
@@ -190,7 +209,6 @@ export default {
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
             });
-            this.isLoading = false;
         },
         updateShoppingCart: async function(userId, productId, quantity){
             await this.$apollo.mutate({
@@ -261,12 +279,7 @@ export default {
     mounted: async function() {
         this.setShoppingCart();
     },
-    watch: {
-        statusCart: function(){
-            if(this.statusCart)
-                this.cart = true;
-        }
-    }
+
 }
 </script>
 

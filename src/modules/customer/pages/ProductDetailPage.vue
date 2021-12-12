@@ -264,10 +264,6 @@ export default {
             type: String,
             default: false,
         },
-        // editOption:{
-        //     type: Boolean,
-        //     required: true
-        // },
     },
     components:{
         QuestionsModal: defineAsyncComponent(() => import( /* webpackChunkName: "questionsModal" */ '../components/modals/QuestionsModal')),
@@ -653,7 +649,6 @@ export default {
         await this.getPublication();
         await this.getQuestions();
         await this.verifyPublicationOwner();
-        console.log(this.editOption);
     },
 
 }

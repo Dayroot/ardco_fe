@@ -13,32 +13,32 @@
                         <label class="text-gray-600 mb-2 block">
                             Nombre y apellido <span class=" text-color-primary-2">*</span>
                         </label>
-                        <input type="text" class="input-box">
+                        <input type="text" class="input-box" v-model="creditCardDetails.fullname">
                     </div>
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div>
                             <label class="text-gray-600 mb-2 block">
                                 Número de tarjeta <span class="text-color-primary-2">*</span>
                             </label>
-                            <input type="text" class="input-box">
+                            <input type="text" class="input-box" v-model="creditCardDetails.numberCard">
                         </div>
                         <div>
                             <label class="text-gray-600 mb-2 block">
                                 Fecha de expiración <span class="text-color-primary-2">*</span>
                             </label>
-                            <input type="text" class="input-box">
+                            <input type="text" class="input-box" v-model="creditCardDetails.expirationDate">
                         </div>
                         <div>
                             <label class="text-gray-600 mb-2 block">
                                 Código de seguridad <span class="text-color-primary-2">*</span>
                             </label>
-                            <input type="text" class="input-box">
+                            <input type="text" class="input-box" v-model="creditCardDetails.codSecurity">
                         </div>
                         <div>
                             <label class="text-gray-600 mb-2 block">
                                 Documento de identificación <span class="text-color-primary-2">*</span>
                             </label>
-                            <input type="text" class="input-box">
+                            <input type="text" class="input-box" v-model="creditCardDetails.identification">
                         </div>
                     </div>
                     
@@ -49,7 +49,7 @@
 
        <!-- order summary -->
         <div class="xl:col-span-3 lg:col-span-4 border border-gray-200 px-4 py-4 rounded mt-6 lg:mt-0 bg-color-secondary-1-1 shadow-sm">
-            <h4 class=" text-lg mb-4 font-medium uppercase">ORDEN DE COMPRA</h4>
+            <h4 class=" text-lg mb-4 font-medium uppercase" >ORDEN DE COMPRA</h4>
             <div class="space-y-2 my-2 border-b border-color-secondary-2-0 text-gray-500 font-light">
                 <div class="flex justify-between" v-for="(productCart, index) in shoppingCart" :key="index">
                     <div>
@@ -75,7 +75,7 @@
             </div>
 
             <!-- checkout -->
-            <button class="button-1 rounded-t" @click="setRedirect">
+            <button class="button-1 rounded-t" @click="setPurchase">
                 Pagar
             </button>
             <!-- checkout end -->
@@ -83,6 +83,11 @@
         <!-- order summary end -->
     </div>
     <!-- checkout wrapper end -->
+    <Loading 
+        v-model:active="isLoading"
+        :can-cancel="true"
+        :is-full-page="fullPage"
+    />
 </template>
 
 <script>
@@ -90,6 +95,7 @@ import jwt_decode from "jwt-decode";
 import gql from "graphql-tag";
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
+import Swal from 'sweetalert2';
 
 export default {
     data() {
@@ -99,11 +105,60 @@ export default {
             total:0,
             subtotal:0,
             costShipping:0,
+            creditCardDetails:{
+                fullname:null,
+                numberCard:null,
+                expirationDate:null,
+                codSecurity: null,
+                identification: null,
+            }
         }
     },
+    components: { Loading },
     methods:{
         setRedirect: function(){
-            this.$router.push({name: 'payment'});
+            this.isLoading = true;
+            let blankFields = false;
+            Object.values(this.creditCardDetails).forEach(field =>{
+                if(!field)
+                    blankFields = true;
+            });
+            if(!blankFields){
+                this.setPurchase();
+            }else{
+                this.isLoading = false;
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    text: 'Debes llenar todos los campos del formulario!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        },
+        setPurchase: async function(){
+            const token = await localStorage.getItem('token_access');
+            let userId;
+            if(token){
+                userId = await jwt_decode(token).user_id;
+                let productsPurchase = await this.shoppingCart.map( element => { 
+                    return {
+                        product: element.product._id,
+                        quantity: element.quantity
+                    }
+                });
+                this.sendPurchase(userId, this.total, productsPurchase);
+            }else{
+                this.isLoading = false;
+                 Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    text: 'Debes iniciar sesión para realizar el pago!',
+                    showConfirmButton: false,
+                    timer: 2500
+                });
+                setTimeout( this.$router.push({name: 'login'}), 2500);
+            }
         },
         setShoppingCart: async function(){
 
@@ -156,47 +211,36 @@ export default {
             this.isLoading = false;
         },
         
-        deleteProductCart: async function(userId, productId){
+        sendPurchase: async function(userId, total, products){
             await this.$apollo.mutate({
                 mutation: gql`
-                    mutation ($userId: Int!, $cartProductInput: CartProductInput) {
-                        updateCartProduct(userId: $userId, cartProductInput: $cartProductInput) {
-                            products {
-                                quantity
-                                product {
-                                    _id
-                                    name
-                                    price
-                                    stock
-                                    imgUrls
-                                }
-                            }
+                    mutation ($purchaseInput: PurchaseInput!) {
+                        createPurchase(purchaseInput: $purchaseInput) {
+                            userId
                         }
                     }
                 `,
                 variables: {
-                    userId: userId,
-                    cartProductInput: {
-                        product: productId,
+                    purchaseInput: {
+                        userId: userId,
+                        total: total,
+                        products: products
                     }
                 }
             })
             .then( response => {
-                this.shoppingCartUserAuth = response.data.updateCartProduct.products.map( element => { return {...element}} );
+                this.isLoading = false;
+                this.$router.push({name:'orderCompleted'})
             })
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
             });
-        }
+            this.isLoading = false;
+        },
+
     },
     mounted: async function() {
         this.setShoppingCart();
     },
-    watch: {
-        statusCart: function(){
-            if(this.statusCart)
-                this.cart = true;
-        }
-    }
 }
 </script>

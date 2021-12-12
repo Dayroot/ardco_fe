@@ -32,7 +32,7 @@
                 <p>Total:</p>
                 <span class=" text-color-primary-2 font-light">{{total}}</span>
             </div>
-            <router-link :to="{name: 'shoppingCartPage'}" class="button-2 hover:border-color-primary-2" >Finalizar Compra</router-link>
+            <button class="button-2 hover:border-color-primary-2" @click="redirectToCartPage">Finalizar Compra</button>
         </footer>
     </div>
 
@@ -42,6 +42,7 @@ import jwt_decode from "jwt-decode";
 import gql from "graphql-tag";
 
 export default {
+    emits:['closeShoppingCart'],
     data() {
         return {
             shoppingCartUserAuth: null,
@@ -50,6 +51,10 @@ export default {
         }
     },
     methods:{
+        redirectToCartPage: async function(){
+            await this.$emit('closeShoppingCart');
+            this.$router.push({name: 'shoppingCartPage'});
+        },
         setDeleteProductCart: async function(productId, index){
             const token = await localStorage.getItem('token_access');
             if(token){

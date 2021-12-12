@@ -36,7 +36,7 @@ const routes = [
 								props: true,
 							},
 							{
-								path: ':categoryName',
+								path: ':categoryId',
 								name: 'products',
 								meta: {title: 'Productos', requiresAuth: false},
 								component:  () => import(/* webpackChunkName: "productsPage" */'../modules/customer/pages/ProductsPage'),
@@ -93,7 +93,20 @@ const routes = [
 				name: 'orderCompleted',
 				meta: {title: 'Orden de compra completada', requiresAuth: false},
 				component:  () => import(/* webpackChunkName: "orderCompletedPage" */'../modules/customer/pages/OrderCompletedPage'),
+			},
+			{
+				path: 'completar-datos-de-usuario',
+				name: 'completeUserData',
+				meta: {title: 'Completar datos de usuario', requiresAuth: false},
+				component:  () => import(/* webpackChunkName: "completeUserDataPage" */'../modules/customer/pages/CompleteUserDataPage'),
+			},
+			{
+				path: 'vender',
+				name: 'sell',
+				meta: {title: 'Vender', requiresAuth: false},
+				component:  () => import(/* webpackChunkName: "sellPage" */'../modules/customer/pages/SellPage'),
 			}
+
 		]
 	},
 
@@ -106,26 +119,27 @@ const router = createRouter({
 
 router.beforeEach( async(to, from, next) => {
     document.title = to.meta.title
-    var is_auth = await isAuthenticatedUser();
+    // var is_auth = await isAuthenticatedUser(to, from, next);
 
-	if( is_auth == to.meta.requiresAuth || is_auth && !to.meta.requiresAuth) 
-		next()
+	// if( is_auth == to.meta.requiresAuth || is_auth && !to.meta.requiresAuth) 
+	// 	next()
 
-	if( !is_auth && to.meta.requiresAuth){
-		Swal.fire({
-            position: 'center',
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Su sesión expiró, por favor vuelva a iniciar sesión',
-            showConfirmButton: false,
-            timer: 3000
-        });
-		nex({name: 'login', params:{ logOut: true }})
-	}
+	// if( !is_auth && to.meta.requiresAuth){
+	// 	Swal.fire({
+    //         position: 'center',
+    //         icon: 'error',
+    //         title: 'Oops...',
+    //         text: 'Su sesión expiró, por favor vuelva a iniciar sesión',
+    //         showConfirmButton: false,
+    //         timer: 3000
+    //     });
+	// 	next({name: 'login', params:{ logOut: true }})
+	// }
 
-	if(to.name=="payment" && from.name != "shoppingCartPage"){
-		next({name: 'no-found-page'})
-	}
+	// // if(to.name=="payment" && from.name != "shoppingCartPage"){
+	// // 	next({name: 'no-found-page'})
+	// // }
+	next()
 })
 
 

@@ -8,12 +8,12 @@ const apolloClient = new ApolloClient({
     cache: new InMemoryCache()
 })
 
-const isAuthenticatedUser = async() => {
+const isAuthenticatedUser = async( to, from, next ) => {
 
     const access_token = localStorage.getItem('token_access');
     const refresh_token = localStorage.getItem('token_refresh');
 
-    if( !access_token && !refresh_token)
+    if( !access_token || !refresh_token)
         return false;
     
     try {
@@ -41,7 +41,7 @@ const isAuthenticatedUser = async() => {
             showConfirmButton: false,
             timer: 3000
         });
-        nex({name: 'login', params:{ logOut: true }})
+        next({name: 'login', params:{ logOut: true }})
     }
 };
 

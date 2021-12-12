@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-6">
+    <div class="flex flex-col gap-6" v-if="categories && products">
         <Galleria
             :showThumbnails="false"
             :showItemNavigators="true"
@@ -86,7 +86,7 @@ export default {
                    body: "Los mejores productos tipicos en un solo lugar!"
                 }
             ],
-            products:[],
+            products:null,
             responsiveOptions: [
                 {
                     breakpoint: '1280px',
@@ -111,7 +111,7 @@ export default {
 		    ],
             isLoading: true,
             fullPage: true,
-            categories: [],
+            categories: null,
         }
     },
 

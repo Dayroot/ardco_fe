@@ -5,7 +5,7 @@
         @completedSignUp="completedSignUp"
         @completedLogOut="authUser = false"
     />
-    <Footer/>
+    <!-- <Footer/> -->
 </template>
 
 <script>
@@ -23,6 +23,7 @@ export default {
     },
     methods:{
         completedLogIn: function(data) {
+            localStorage.clear();
             localStorage.setItem("authUser", true)
             localStorage.setItem("username", data.username);
             localStorage.setItem("fullname", data.fullname);

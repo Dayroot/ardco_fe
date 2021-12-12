@@ -4,7 +4,7 @@
                 :is-full-page="fullPage"
     />
 
-    <div class="flex">
+    <div class="flex" v-if="products">
         <!-- filter bar -->
         <div class="filter">
             <product-filter
@@ -28,7 +28,7 @@
                 </button>
                 <select class="sort-button" v-model="sortBy">
                     <option class="hidden" value="default">Ordenar por</option>
-                    <option class=" text-xs" value="sales">Más vendidos</option>
+                    <option class=" text-xs" value="sales" >Más vendidos</option>
                     <option class="text-xs" value="low">Menor precio</option>
                     <option class="text-xs" value="high">Mayor precio</option>
                 </select>
@@ -63,6 +63,7 @@ export default{
     props: {
         products: {
             type: Array,
+            default:null,
             required: true
         }
     },
@@ -94,7 +95,7 @@ export default{
                             if(product.price < filters[filterField][0] || product.price > filters[filterField][1] )
                                 return false;
                         }
-                        else if( !filters[filterField].includes( product.category.features[filterField] ) )
+                        else if( !filters[filterField].includes( product.features[filterField] ) )
                             return false;
                                                 
                     }
@@ -107,11 +108,11 @@ export default{
             else
                 this.noProducts = false;
         },
-    },
-    watch:{
-        sortBy: function(){
+        setSortBy: function(value){
+            console.log("entro");
+            console.log(value);
             if( this.sortBy == "low"){
-                this.filteredProducts.sort( function(a, b){
+               this.filteredProducts.sort( function(a, b){
                     if(a.price > b.price)
                         return 1;
                     else if(a.price < b.price)
@@ -139,6 +140,11 @@ export default{
                     return 0
                 });
             }
+        }
+    },
+    watch:{
+        sortBy: function(){
+            this.setSortBy();
         }
     },
 

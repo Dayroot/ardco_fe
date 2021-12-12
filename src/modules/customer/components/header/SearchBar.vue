@@ -17,7 +17,7 @@
                 <div class="flex items-center md:justify-between gap-4 md:gap-6 p-4 border border-gray-200 rounded flex-wrap md:flex-nowrap text-color-secondary-2-0">
                     <!-- cart image -->
                     <div class="w-28 h-20 flex-shrink-0 ">
-                        <img :src=" product.imgUrls[0]" class="w-full h-full object-cover rounded bg-blue-300">
+                        <img :src=" product.imgUrls[0]" class="w-full h-full object-cover rounded">
                     </div>
                     <!-- cart image end -->
                     <!-- cart content -->
