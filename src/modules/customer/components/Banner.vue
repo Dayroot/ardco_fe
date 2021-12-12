@@ -33,21 +33,21 @@ export default {
 <style lang="css" scoped>
 
 .banner{
-    @apply w-screen h-116 bg-blue-300 overflow-hidden relative flex items-center;
+    @apply w-screen h-116 overflow-hidden relative flex items-center;
 }
 .banner__img{
     @apply object-fill w-screen h-full;
 }
 
 .banner__title {
-    @apply text-color-secondary-2-0 text-5xl ;
+    @apply text-color-secondary-1-1 text-5xl capitalize;
 }
 .banner__text {
     @apply absolute;
 }
 
 .banner__description {
-    @apply text-color-secondary-2-0 text-lg max-w-md;
+    @apply  text-color-secondary-1-2 text-lg max-w-md;
 }
 
 </style>

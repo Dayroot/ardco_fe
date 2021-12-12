@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="flex flex-col gap-6">
         <Galleria
             :showThumbnails="false"
             :showItemNavigators="true"
@@ -15,22 +15,20 @@
             </template>
         </Galleria>
 
-        <div class="mt-32 marginsX-1">
+        <div class="marginsX-1 ">
             <h2 class="carousel__title">Comprar por categoria!</h2>
             <div class="grid lg:grid-cols-2 sm:grid-cols-2 gap-3">
                 <div v-for="(category, index) in categories" :key="index">
-                    <div class="category__back-drop">
+                    <div>
                         <router-link
                             :to="{name:'products', params:{ categoryId: category._id, categoryName: category.name } }"
-                            class="flex justify-center items-center overflow-hidden h-56 w-full"
+                            class="flex justify-center items-center overflow-hidden h-56 w-full relative rounded"
                         >
                             <img class="object-cover w-full h-full" :src="category.img" alt="">
-
-                            <div class="w-15% h-5% absolute bg-black bg-opacity-40  justify-center items-center flex rounded-sm">
-                                <p class="text-color-secondary-1-1 hover:text-color-primary-0 transition">{{category.name}}</p>
+                            <div class=" z-10 absolute bg-black bg-opacity-40 w-40% h-20% justify-center items-center flex rounded hover:scale-105 transform transition">
+                                <p class="text-color-secondary-1-1 hover:text-color-primary-0 transition capitalize">{{category.name}}</p>
                             </div>
-                            
-                        
+                            <div class="category__back-drop"></div>
                         </router-link>
                     </div>
                 </div>
@@ -38,7 +36,7 @@
         </div>    
 
 
-        <div class="mt-32 marginsX-1">
+        <div class="marginsX-1">
             <h2 class="carousel__title">Nuevos Productos!</h2>
             <Carousel
                 :value="products"
@@ -180,11 +178,11 @@ export default {
 
 <style lang="css">
     .carousel__title{
-        @apply text-color-secondary-2-0 text-3xl mb-6 pl-11;
+        @apply text-color-secondary-2-0 text-3xl mb-6;
     }
     .category__back-drop {
-    @apply bg-black bg-opacity-20 hover:bg-opacity-60 transition;
-    @apply rounded-md;
+        @apply bg-black bg-opacity-20 hover:bg-opacity-50 transition;
+        @apply rounded-md absolute w-full h-full;
     }
 
 </style>
