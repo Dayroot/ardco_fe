@@ -103,8 +103,14 @@ const routes = [
 			{
 				path: 'vender',
 				name: 'sell',
-				meta: {title: 'Vender', requiresAuth: false},
+				meta: {title: 'Vender', requiresAuth: true},
 				component:  () => import(/* webpackChunkName: "sellPage" */'../modules/customer/pages/SellPage'),
+			},
+			{
+				path: 'nueva-publicación',
+				name: 'newPublication',
+				meta: {title: 'Nueva publicación', requiresAuth: true},
+				component:  () => import(/* webpackChunkName: "newPublicationPage" */'../modules/customer/pages/NewPublicationPage'),
 			}
 
 		]
@@ -119,27 +125,27 @@ const router = createRouter({
 
 router.beforeEach( async(to, from, next) => {
     document.title = to.meta.title
-    // var is_auth = await isAuthenticatedUser(to, from, next);
+    let is_auth = await isAuthenticatedUser(to, from, next);
 
-	// if( is_auth == to.meta.requiresAuth || is_auth && !to.meta.requiresAuth) 
-	// 	next()
+	if( is_auth == to.meta.requiresAuth || is_auth && !to.meta.requiresAuth) 
+		next();
 
-	// if( !is_auth && to.meta.requiresAuth){
-	// 	Swal.fire({
-    //         position: 'center',
-    //         icon: 'error',
-    //         title: 'Oops...',
-    //         text: 'Su sesión expiró, por favor vuelva a iniciar sesión',
-    //         showConfirmButton: false,
-    //         timer: 3000
-    //     });
-	// 	next({name: 'login', params:{ logOut: true }})
-	// }
+	else if( !is_auth && to.meta.requiresAuth){
+		Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Necesitas iniciar sesión, para poder continuar.',
+            showConfirmButton: false,
+            timer: 3000
+        });
+		next({name: 'login', params:{ logOut: true }})
+	}
 
 	// // if(to.name=="payment" && from.name != "shoppingCartPage"){
 	// // 	next({name: 'no-found-page'})
 	// // }
-	next()
+	
 })
 
 

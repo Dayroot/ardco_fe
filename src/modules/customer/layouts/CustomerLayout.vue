@@ -1,11 +1,13 @@
 <template>
-    <Header :authUser="authUser"/>
-    <router-view
-        @completedLogIn="completedLogIn"
-        @completedSignUp="completedSignUp"
-        @completedLogOut="authUser = false"
-    />
-    <!-- <Footer/> -->
+    <div class="content-layout">
+        <Header :authUser="authUser"/>
+        <router-view
+            @completedLogIn="completedLogIn"
+            @completedSignUp="completedSignUp"
+            @completedLogOut="authUser = false"
+        />
+    </div>
+    <Footer/>
 </template>
 
 <script>
@@ -39,3 +41,8 @@ export default {
     
 }
 </script>
+<style lang="css">
+    .content-layout{
+        min-height: 90vh;
+    }
+</style>

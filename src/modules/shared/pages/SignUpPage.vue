@@ -1,6 +1,11 @@
  <!-- form wrapper --> 
  <template>
-        <div class="container lg:grid grid-cols-12 gap-6 items-start pb-16 pt-4 marginsX-1">
+    <loading v-model:active="isLoading"
+                :can-cancel="true"
+                :is-full-page="fullPage"
+    />
+    <div class="container pt-12">
+        <div class="max-w-lg mx-auto shadow px-6 py-7 rounded overflow-hidden">
             <h2 class="text-2xl uppercase font-medium mb-6">
                 Crear una cuenta
             </h2>
@@ -39,18 +44,13 @@
                 </div>
             </form>
         </div>
-    <loading v-model:active="isLoading"
-                :can-cancel="true"
-                :is-full-page="fullPage"
-    />
+    </div>
 </template>
 
 
 <script>
 import gql from "graphql-tag";
-import 'vue-loading-overlay/dist/vue-loading.css';
 import Loading from 'vue-loading-overlay';
-import Swal from 'sweetalert2';
 
 export default {
     emits:["completedSignUp"],
@@ -62,50 +62,46 @@ export default {
                 fullname: "",
                 email: ""
             },
+            signUpError: false,
             isLoading: false,
             fullPage: true,
         }
     },
-    components:{ Loading },
 
     methods: {
-    
+        setCredentialError: function(){
+            this.signUpError = !this.signUpError;
+        },
         processSignUp: async function() { 
-            this.isLoading = true;     
-            await this.$apollo
-                .mutate({
-                    mutation: gql`
-                        mutation($userInput: SingUpInput!){
-                            signUpUser(userInput: $userInput) {
-                                refresh
-                                access
-                                fullname
-                            }
+        this.isLoading = true;     
+        await this.$apollo
+            .mutate({
+                mutation: gql`
+                    mutation($userInput: SingUpInput!){
+                        signUpUser(userInput: $userInput) {
+                            refresh
+                            access
+                            fullname
                         }
-                    `,
-                    variables: {
-                        userInput: this.user,
-                    },
-                })
-                .then((result) => {
-                    let dataLogIn = {
-                        username: this.user.username,
-                        token_access: result.data.signUpUser.access,
-                        fullname: result.data.signUpUser.fullname,
-                        token_refresh: result.data.signUpUser.refresh,
                     }
-                    this.$emit("completedSignUp", dataLogIn);
-                })
-                .catch((error) => {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        text: 'Ha ocurrido un error, por favor vuelve a intentarlo.',
-                        showConfirmButton: false,
-                        timer: 2500
-                    });
-                });
-                this.isLoading = false;
+                `,
+                variables: {
+                    userInput: this.user,
+                },
+            })
+            .then((result) => {
+                let dataLogIn = {
+                    username: this.user.username,
+                    token_access: result.data.signUpUser.access,
+                    fullname: result.data.signUpUser.fullname,
+                    token_refresh: result.data.signUpUser.refresh,
+                }
+                this.$emit("completedSignUp", dataLogIn);
+            })
+            .catch((error) => {
+                this.setCredentialError();
+            });
+            this.isLoading = false;
         }
     }
 }

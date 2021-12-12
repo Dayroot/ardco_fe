@@ -44,7 +44,6 @@
                 :numScroll="1"
                 :responsiveOptions="responsiveOptions"
                 :circular="true"
-                :autoplayInterval="2000"
             >
                 <template #item="product">
                         <card :product="product.data"/>

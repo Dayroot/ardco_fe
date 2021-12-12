@@ -109,8 +109,7 @@ export default{
                 this.noProducts = false;
         },
         setSortBy: function(value){
-            console.log("entro");
-            console.log(value);
+            console.log("ffffffffffffffffff");
             if( this.sortBy == "low"){
                this.filteredProducts.sort( function(a, b){
                     if(a.price > b.price)

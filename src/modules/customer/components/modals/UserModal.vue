@@ -22,7 +22,7 @@
                     <p class="user-modal__field">Preguntas</p>
                 </div>
             </router-link>
-            <router-link :to="{name: 'home'}" class="user-modal__field-wrapper">
+            <router-link :to="{name:'sell'}" class="user-modal__field-wrapper">
                 <div class="user-modal__field-wrapper">
                     <p class="user-modal__field">Vender</p>
                 </div>
@@ -48,11 +48,26 @@
 <script>
 export default {
     props: ['auth'],
+    data() {
+        return {
+            firstname: null,
+        }
+    },
     methods:{
         setlogOut: function(){
             localStorage.clear();
             this.$router.push({ name: "home", params:{ logOut: true } });
-        }
+        },
+        setFirstName: function() {
+            const fullname = localStorage.getItem('fullname');
+            if(fullname)
+                this.firstname = fullname.split(' ')[0];
+        },
+
+    },
+    created: function(){
+        console.log()
+        this.setFirstName();
     }
 }
 </script>

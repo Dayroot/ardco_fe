@@ -217,6 +217,10 @@ export default {
                 this.$emit('closedConfirmAddToCard');
         }
     },
+    created: function(){
+        console.log(this.product);
+        console.log(this.confirmAddToCart);
+    }
 
 }
 </script>

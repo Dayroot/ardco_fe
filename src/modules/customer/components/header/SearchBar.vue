@@ -12,6 +12,7 @@
                 </button>
         </div>
         <div class="extendable" v-if="openExtendable"  v-click-outside="closeExtendable">
+    
             <div v-for="(product,index) in productsfilter" :key="index" >
                 <!-- single cart -->
                 <div class="flex items-center md:justify-between gap-4 md:gap-6 p-4 border border-gray-200 rounded flex-wrap md:flex-nowrap text-color-secondary-2-0">
@@ -24,7 +25,7 @@
                     <div class="w-70% overflow-hidden truncate">
                         <router-link
                             :to="{name: 'productDetailPage', params: {productId:  product._id}}"
-                            class=" mb-3 xl:text-xl textl-lg font-normal uppercase hover:text-color-primary-0 transition"
+                            class=" mb-3 textl-lg font-normal uppercase hover:text-color-primary-0 transition"
                         >
                             {{ product.name}}
                         </router-link>
@@ -97,7 +98,7 @@ export default {
                     return true 
             }); 
             
-            if(this.productsfilter.length){
+            if(this.searchInput.length && this.productsfilter.length){
                 this.openExtendable = true;
             }else{
                 this.openExtendable = false;

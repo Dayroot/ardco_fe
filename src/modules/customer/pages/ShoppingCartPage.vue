@@ -44,7 +44,7 @@
                         <div class="ml-auto md:ml-0">
                             <p class="text-primary text-lg font-semibold">${{productCart.product.price * productCart.quantity}}</p>
                         </div>
-                        <div class="button-delete">
+                        <div class="button-delete" @click="setDeleteProductCart(productCart.product._id, index)">
                             <i class="fas fa-trash"></i>
                         </div>
                     </div>
@@ -102,6 +102,8 @@ export default {
             total:0,
             subtotal:0,
             costShipping:0,
+            isLoading: true,
+            fullPage: true,
         }
     },
     components:{
@@ -182,6 +184,7 @@ export default {
             
         },
         getShoppingCart: async function(userId){
+            this.isLoading = true;
             await this.$apollo.query({
                 query: gql`
                     query ($userId: Int!) {
@@ -209,8 +212,10 @@ export default {
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
             });
+            this.isLoading = false;
         },
         updateShoppingCart: async function(userId, productId, quantity){
+            this.isLoading = true;
             await this.$apollo.mutate({
                 mutation: gql`
                     mutation ($userId: Int!, $cartProductInput: CartProductInput) {
@@ -242,8 +247,10 @@ export default {
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
             });
+            this.isLoading = false;
         },
         deleteProductCart: async function(userId, productId){
+            this.isLoading = true;
             await this.$apollo.mutate({
                 mutation: gql`
                     mutation ($userId: Int!, $cartProductInput: CartProductInput) {
@@ -274,6 +281,7 @@ export default {
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
             });
+            this.isLoading = false;
         }
     },
     mounted: async function() {

@@ -55,7 +55,6 @@
 
                 <div class="review__quantity">({{product.total_reviews}})</div>
             </div>
-
         </div>
         <!-- card content end -->
 
@@ -72,9 +71,9 @@
     </div>
         
     <ConfirmAddToCartModal
-        v-if="confirmAddToCart"
+        
         @closedConfirmAddToCard="confirmAddToCart = false"
-        :openConfirmAddToCard="true"
+        :openConfirmAddToCard="confirmAddToCart"
         :product="product"
 
     />

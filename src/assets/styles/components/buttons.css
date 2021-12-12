@@ -132,6 +132,14 @@
 }
 /* button 3 end */
 
+/* button 4 */
+.button-4 {
+    @apply flex items-center justify-center w-full py-1 rounded-b uppercase; 
+    @apply hover:bg-color-primary-2 border border-color-primary-2;
+    @apply bg-transparent text-color-primary-2 transition;
+    @apply hover:text-white font-medium;
+}
+/* button 4 end */
 .button-delete{
     @apply text-gray-600 hover:text-yellow-600 cursor-pointer transition hover:scale-105 transform;
 }

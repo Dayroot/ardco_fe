@@ -35,11 +35,17 @@
             <button class="button-2 hover:border-color-primary-2" @click="redirectToCartPage">Finalizar Compra</button>
         </footer>
     </div>
-
+    <loading v-model:active="isLoading"
+                :can-cancel="true"
+                :on-cancel="onCancel"
+                :is-full-page="fullPage"
+    />
 </template>
 <script>
 import jwt_decode from "jwt-decode";
 import gql from "graphql-tag";
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
     emits:['closeShoppingCart'],
@@ -48,8 +54,12 @@ export default {
             shoppingCartUserAuth: null,
             shoppingCart: null,
             total:0,
+            isLoading: true,
+            fullPage: false,
         }
     },
+    components:{ Loading },
+
     methods:{
         redirectToCartPage: async function(){
             await this.$emit('closeShoppingCart');
@@ -72,6 +82,7 @@ export default {
             }
         },
         setQuantity: async function(type, productId, currentQuantity, index){
+            this.isLoading = true;
             const token = await localStorage.getItem('token_access');
             let changeQuantity;
             if(type == 'subtract')
@@ -95,6 +106,7 @@ export default {
             for(let item of this.shoppingCart){
                 this.total += item.quantity * item.product.price;
             }
+            this.isLoading = false;
         },
         setShoppingCart: async function(){
 
@@ -115,6 +127,7 @@ export default {
             
         },
         getShoppingCart: async function(userId){
+            this.isLoading = true;
             await this.$apollo.query({
                 query: gql`
                     query ($userId: Int!) {
@@ -142,8 +155,10 @@ export default {
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
             });
+            this.isLoading = false;
         },
         updateShoppingCart: async function(userId, productId, quantity){
+            this.isLoading = true;
             await this.$apollo.mutate({
                 mutation: gql`
                     mutation ($userId: Int!, $cartProductInput: CartProductInput) {
@@ -175,8 +190,10 @@ export default {
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
             });
+            this.isLoading = false;
         },
         deleteProductCart: async function(userId, productId){
+            this.isLoading = true;
             await this.$apollo.mutate({
                 mutation: gql`
                     mutation ($userId: Int!, $cartProductInput: CartProductInput) {
@@ -207,6 +224,7 @@ export default {
             .catch(e => {
                 console.log(JSON.stringify(e, null, 2));
             });
+            this.isLoading = false;
         }
     },
     mounted: async function() {

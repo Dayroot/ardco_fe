@@ -1,6 +1,6 @@
 <template>
 
-    <div class=" bg-color-secondary-2-1 py-2 marginsX-1 absolute w-full mt-6">
+    <div class=" bg-color-secondary-2-1 py-2 marginsX-1 absolute w-full">
 
         <div class="container flex items-center justify-between">
 
@@ -20,3 +20,4 @@
     </div>
 
 </template>
+

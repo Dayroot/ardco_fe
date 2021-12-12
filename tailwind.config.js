@@ -2,7 +2,7 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
 	purge: {
-		enabled: false,
+		enabled: true,
 		layers: ['components', 'utilities'],
 		content: ['./public/index.html','./src/assets/**/*.css', './src/**/*.vue'],
 	},

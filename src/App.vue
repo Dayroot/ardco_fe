@@ -8,7 +8,7 @@
     @apply font-primary;
   }
   body {
-    @apply overflow-x-hidden bg-color-secondary-1-2;
+    @apply overflow-x-hidden bg-color-secondary-1-2 relative;
   }
 
 </style>
